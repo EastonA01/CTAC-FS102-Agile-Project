@@ -5,18 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inkling</title>
+    <!-- Link to Bootstrap CSS for styling -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Link to custom styles -->
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
         <div class="row my-3">
             <div class="col-12 text-center">
+                <!-- Placeholder for the logo, aligned to the left -->
                 <img src="your-logo-url-here.png" alt="Logo" class="float-left" style="max-height: 50px;">
+                <!-- Main title of the app -->
                 <h1>INKLING</h1>
             </div>
         </div>
         <div class="row">
+            <!-- Left sidebar for followers -->
             <div class="col-md-3">
                 <div class="card nav-card">
                     <div class="card-body">
@@ -24,26 +29,34 @@
                     </div>
                 </div>
             </div>
+            <!-- Main content area for welcome message and posts -->
             <div class="col-md-6">
+                <!-- Welcome card -->
                 <div class="card welcome-card">
                     <div class="card-body">
+                        <!-- Search bar for searching tags -->
                         <div class="input-group mb-3">
                             <input type="text" class="form-control search-bar" placeholder="Search tags..." aria-label="Search tags" aria-describedby="search-button">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" id="search-button">Search</button>
                             </div>
                         </div>
+                        <!-- Welcome message title -->
                         <h5 class="card-title">Welcome to Inkling</h5>
+                        <!-- Welcome message text -->
                         <p class="card-text">This is your go-to place for sharing thoughts and ideas.</p>
                     </div>
                 </div>
                 <!-- Example of a post card -->
                 <div class="card post-card">
                     <div class="card-body position-relative">
+                        <!-- Close button for deleting the post -->
                         <button type="button" class="close position-absolute" style="top: 10px; right: 10px;" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
+                        <!-- Example post content -->
                         <p class="card-text">This is a post.</p>
+                        <!-- Section for like counter and action buttons -->
                         <div class="d-flex justify-content-between mt-3">
                             <span class="like-counter">Likes: 0</span>
                             <div class="btn-group" role="group">
@@ -54,8 +67,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- More post cards will be dynamically added here -->
+                <!-- Placeholder for more dynamically added post cards -->
             </div>
+            <!-- Right sidebar for most liked posts -->
             <div class="col-md-3">
                 <div class="card most-liked-card">
                     <div class="card-body">
@@ -66,10 +80,10 @@
         </div>
     </div>
 
-    <!-- New Post Button -->
+    <!-- Button to open the modal for creating a new post -->
     <button class="new-post-button" data-toggle="modal" data-target="#newPostModal">+</button>
 
-    <!-- New Post Modal -->
+    <!-- Modal for creating a new post -->
     <div class="modal fade" id="newPostModal" tabindex="-1" role="dialog" aria-labelledby="newPostModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -82,6 +96,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
+                        <!-- Textarea for entering new post content -->
                         <div class="form-group">
                             <label for="postContent">Post Content</label>
                             <textarea class="form-control" id="postContent" rows="3"></textarea>
@@ -89,13 +104,18 @@
                     </form>
                 </div>
                 <div class="modal-footer">
+                    <!-- Button to cancel creating a new post -->
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <!-- Button to submit the new post -->
                     <button type="button" class="btn btn-primary">Submit</button>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- Link to custom script file -->
     <script src="script.js"></script>
+    <!-- Link to jQuery, Popper.js, and Bootstrap JS for modal functionality -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
