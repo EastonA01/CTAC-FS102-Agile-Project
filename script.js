@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to add a new post to the post container
     function addPost(content, id) {
         console.log("Adding post:", content);
+        const date = Date.now();
 
         // Get the post container where posts will be appended
         const postContainer = document.querySelector('.col-md-6');
@@ -61,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="card-body position-relative">
                 <div class="d-flex justify-content-between">
                     <span class="post-username">Username</span>
+                    <span class="post-date">${new Date(date).toLocaleString()}</span>
                     <button type="button" class="close" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
