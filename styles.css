@@ -1,0 +1,62 @@
+body {
+    background-image: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12);
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.new-post-button {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    color: black;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.new-post-button:hover {
+    transform: translateX(-50%) scale(1.2);
+}
+
+.post-card {
+    margin-bottom: 20px;
+    box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.modal-header, .modal-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.post-card + .post-card {
+    margin-top: 20px;
+    box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
+}
+
+.search-bar {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.welcome-card {
+    margin-bottom: 20px;
+    box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
+}
+
+.nav-card, .most-liked-card {
+    margin-bottom: 20px;
+    box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+    cursor: pointer;
+}
