@@ -91,7 +91,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // Event listener for the like button
         likeButton.addEventListener('click', function() {
             const currentLikes = parseInt(likeCounter.textContent.split(': ')[1]);
-            likeCounter.textContent = `Likes: ${currentLikes + 1}`;
+            if (likeButton.textContent === 'Like') {
+                likeCounter.textContent = `Likes: ${currentLikes + 1}`;
+                likeButton.textContent = 'Unlike';
+                likeButton.classList.remove('like-button');
+                likeButton.classList.add('unlike-button');
+            } else {
+                likeCounter.textContent = `Likes: ${currentLikes - 1}`;
+                likeButton.textContent = 'Like';
+                likeButton.classList.remove('unlike-button');
+                likeButton.classList.add('like-button');
+            }
         });
 
         // Event listener for the edit button
