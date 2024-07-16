@@ -106,15 +106,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Event listener for the edit button
         editButton.addEventListener('click', function() {
-            const newContent = prompt("Edit your post:", content);
-            if (newContent !== null) {
-                postCard.querySelector('.card-text').textContent = newContent;
-            }
+            alert ("Feature coming soon!");
         });
 
         // Event listener for the comment button
         commentButton.addEventListener('click', function() {
-            alert("Comment feature coming soon!");
+            alert("Feature coming soon!");
         });
 
         // Event listener for the delete button
