@@ -102,4 +102,14 @@ document.addEventListener('DOMContentLoaded', function() {
             postCard.remove();
         });
     }
+
+    // Scroll to the top of the page when the Home button is clicked
+    document.getElementById('home-button').addEventListener('click', function() {
+        window.scrollTo(0, 0);
+    });
+
+    // Focus on the search bar when the Search button is clicked
+    document.getElementById('search-button-nav').addEventListener('click', function() {
+        document.getElementById('search-bar').focus();
+    });
 });
