@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize a counter to assign unique IDs to each post
-    let postIdCounter = 1;
+    let postIdCounter = 2;
 
     // Get references to the submit button and the textarea for the new post content
     const submitButton = document.querySelector('.modal-footer .btn-primary');
@@ -15,20 +15,18 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleSubmit() {
         // Get the trimmed text from the textarea
         const postText = postContent.value.trim();
-        
+
         // If the text is not empty, proceed to add the post
         if (postText) {
-            console.log("Submit button clicked");
-            
             // Add the post to the post container
             addPost(postText, postIdCounter);
-            
+
             // Clear the textarea
             postContent.value = '';
-            
+
             // Hide the modal
             $('#newPostModal').modal('hide');
-            
+
             // Increment the counter for the next post
             postIdCounter++;
         }
@@ -37,14 +35,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to add a new post to the post container
     function addPost(content, id) {
         console.log("Adding post:", content);
-        
+
         // Get the post container where posts will be appended
         const postContainer = document.querySelector('.col-md-6');
-        
+
         // Create a new div element for the post card
         const postCard = document.createElement('div');
         postCard.className = 'card post-card';
-        
+
         // Set the inner HTML of the post card with the content and buttons
         postCard.innerHTML = `
             <div class="card-body position-relative">
@@ -74,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         `;
-        
+
         // Append the new post card to the post container
         postContainer.appendChild(postCard);
 
@@ -114,14 +112,4 @@ document.addEventListener('DOMContentLoaded', function() {
             postCard.remove();
         });
     }
-
-    // Scroll to the top of the page when the Home button is clicked
-    document.getElementById('home-button').addEventListener('click', function() {
-        window.scrollTo(0, 0);
-    });
-
-    // Focus on the search bar when the Search button is clicked
-    document.getElementById('search-button-nav').addEventListener('click', function() {
-        document.getElementById('search-bar').focus();
-    });
 });
