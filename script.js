@@ -89,7 +89,8 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
 
         // Append the new post card to the post container
-        postContainer.appendChild(postCard);
+        const welcomeCard = postContainer.querySelector('.welcome-card');
+        postContainer.insertBefore(postCard, welcomeCard.nextSibling);
 
         // Add event listeners for the like, edit, comment, and delete buttons
         addEventListeners(postCard, id, content);
