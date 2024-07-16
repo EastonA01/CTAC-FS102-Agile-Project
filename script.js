@@ -121,7 +121,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Event listener for the edit button
         editButton.addEventListener('click', function() {
-            alert ("Feature coming soon!");
+            // alert ("Feature coming soon!");
+            const newContent = prompt("Edit your post:", content);
+            if (newContent !== null) {
+                // Update the content in the DOM
+                postCard.querySelector('.card-text').textContent = newContent;
+        
+                // Retrieve the posts from local storage
+                let posts = JSON.parse(localStorage.getItem('posts')) || [];
+        
+                // Find the post to be edited (assuming each post has a unique ID)
+                let postId = postCard.getAttribute('data-post-id');
+                let postIndex = posts.findIndex(post => post.id === postId);
+        
+                // Update the post content in the array
+                if (postIndex !== -1) {
+                    posts[postIndex].content = newContent;
+        
+                    // Save the updated posts array back to local storage
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                } else {
+                    console.error('Post not found in local storage');
+                }
+            }
         });
 
         // Event listener for the comment button
