@@ -32,6 +32,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Event listener to focus the search bar when the search button in the nav is clicked
+    const searchButtonNav = document.getElementById('search-button-nav');
+    const searchBar = document.getElementById('search-bar');
+    
+    searchButtonNav.addEventListener('click', function() {
+        searchBar.focus();
+    });
+
+    // Scroll to the top of the page when the Home button is clicked
+    document.getElementById('home-button').addEventListener('click', function() {
+        window.scrollTo(0, 0);
+    });
+
     // Function to add a new post to the post container
     function addPost(content, id) {
         console.log("Adding post:", content);
@@ -118,5 +131,8 @@ document.addEventListener('DOMContentLoaded', function() {
         deleteButton.addEventListener('click', function() {
             postCard.remove();
         });
+
     }
+
+
 });

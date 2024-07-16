@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     background-image: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12);
     background-attachment: fixed;
@@ -6,7 +10,7 @@ body {
 
 .new-post-button {
     position: fixed;
-    bottom: 20px;
+    bottom: 50px;
     left: 50%;
     transform: translateX(-50%);
     background-color: white;
@@ -61,7 +65,8 @@ body {
 }
 
 .nav-card {
-    position: fixed;
+    position: -webkit-sticky; 
+    position: sticky;
     top: 100px;
     left: 150px; 
     width: 260px; 
@@ -70,7 +75,8 @@ body {
 }
 
 .most-liked-card {
-    position: fixed;
+    position: -webkit-sticky; 
+    position: sticky;
     top: 100px; 
     right: 150px; 
     width: 260px; 
