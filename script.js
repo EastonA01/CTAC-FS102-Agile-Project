@@ -48,16 +48,28 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set the inner HTML of the post card with the content and buttons
         postCard.innerHTML = `
             <div class="card-body position-relative">
-                <button type="button" class="close position-absolute" style="top: 10px; right: 10px;" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <p class="card-text">${content}</p>
+                <div class="d-flex justify-content-between">
+                    <span class="post-username">Username</span>
+                    <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <p class="card-text mt-2">${content}</p>
                 <div class="d-flex justify-content-between mt-3">
-                    <span class="like-counter" id="like-counter-${id}">Likes: 0</span>
+                    <div class="d-flex align-items-center">
+                        <span class="like-counter mr-3" id="like-counter-${id}">Likes: 0</span>
+                        <button type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#comments-section-${id}" aria-expanded="false" aria-controls="comments-section-${id}">Comments</button>
+                    </div>
                     <div class="btn-group" role="group">
                         <button type="button" id="edit-button-${id}" class="btn btn-secondary btn-sm edit-button">Edit</button>
                         <button type="button" id="comment-button-${id}" class="btn btn-secondary btn-sm comment-button">Comment</button>
                         <button type="button" id="like-button-${id}" class="btn btn-secondary btn-sm like-button">Like</button>
+                    </div>
+                </div>
+                <div class="collapse mt-3" id="comments-section-${id}">
+                    <div class="card card-body">
+                        <!-- Comments will be dynamically added here -->
+                        <p class="card-text">No comments yet.</p>
                     </div>
                 </div>
             </div>

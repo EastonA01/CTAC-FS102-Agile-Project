@@ -30,6 +30,7 @@ body {
     margin-bottom: 20px;
     box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
     position: relative;
+    border-radius: 10px;
 }
 
 .modal-header, .modal-footer {
@@ -50,13 +51,19 @@ body {
 .welcome-card {
     margin-bottom: 20px;
     box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
 }
 
 .nav-card, .most-liked-card {
     margin-bottom: 20px;
     box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
 }
 
 .close {
     cursor: pointer;
+}
+
+.post-username {
+    font-weight: bold;
 }
