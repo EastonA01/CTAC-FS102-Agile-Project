@@ -135,7 +135,35 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Function to edit a post
     function editPost(id) {
-        alert ('Section coming soon.');
+        const postCard = document.querySelector(`[data-id="${id}"]`);
+        const postAuthor = postCard.querySelector('.post-username').innerText;
+        const postTags = postCard.querySelector('.post-tags').innerText.split(', ').map(tag => tag.replace('#', '')).join(', ');
+        const postContent = postCard.querySelector('.card-text').innerText;
+    
+        document.querySelector('#editPostAuthor').value = postAuthor;
+        document.querySelector('#editPostTags').value = postTags;
+        document.querySelector('#editPostContent').value = postContent;
+    
+        $('#editPostModal').modal('show');
+    
+        const submitEditPostButton = document.querySelector('#submitEditPostButton');
+        submitEditPostButton.onclick = function() {
+            const updatedTags = document.querySelector('#editPostTags').value.trim().split(',').map(tag => tag.trim());
+            const updatedContent = document.querySelector('#editPostContent').value.trim();
+    
+            if (updatedContent) {
+                let posts = getPosts();
+                const post = posts.find(post => post.id === id);
+                post.tags = updatedTags;
+                post.content = updatedContent;
+                localStorage.setItem('posts', JSON.stringify(posts));
+                postCard.querySelector('.post-tags').innerText = updatedTags.map(tag => `#${tag}`).join(', ');
+                postCard.querySelector('.card-text').innerText = updatedContent;
+                $('#editPostModal').modal('hide');
+            } else {
+                alert('Content cannot be empty.');
+            }
+        };
     }
 
     // Function to add a comment (for simplicity, it just alerts in this example)
