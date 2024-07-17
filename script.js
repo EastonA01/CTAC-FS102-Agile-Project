@@ -183,10 +183,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const sortedTags = Object.entries(tagLikes).sort((a, b) => b[1] - a[1]);
 
         // Update the trending tags section in the DOM
-        mostLikedContainer.innerHTML = 'Trending Tags';
+        mostLikedContainer.innerHTML = '<span style = "font-weight: bold">Trending Tags</span>';
         sortedTags.forEach(([tag, likes]) => {
             const tagElement = document.createElement('div');
-            tagElement.innerText = `${tag}: ${likes} likes`;
+            tagElement.innerHTML = `<span style="font-weight: bold">#${tag}:</span> ${likes} likes`;
             mostLikedContainer.appendChild(tagElement);
         });
     }
