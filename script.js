@@ -152,9 +152,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     //Display comments under posts
     //iteration for each instance of displayComment
-    const loadComments = (postId) => {
+    const loadComments = (id) => {
         for (let i = 0; i < comments.length; i++) {
-            let comments = JSON.parse(`comments-post-${i}`) || ['No comments at this time.'];
+            let comments = JSON.parse(`posts[${id}].comments[${i}]`) || ['No comments at this time.'];
             comments.forEach(comment => {
                 displayComment(i, comment);
             });
@@ -163,10 +163,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     //Function to display a comment in the comment section of a post card
     const displayComment = (i, comment) => {
-        const commentList = document.getElementById(`comments-section-${post.id}`);
+        const commentList = document.getElementById(`comments-section-${posts.id}`);
         const commentDiv = document.createElement('div');
         commentDiv.className = 'card card-body';
-        commentDiv.innerHTML = `<p class ="card-text">${comment.text}</p>`;
+        commentDiv.innerHTML = `<p class ="card-text">${comment.content}</p><small class="text-muted">Posted by ${comment.author} on ${comment.date}</small`;
         commentList.appendChild(commentDiv);
     };
 
