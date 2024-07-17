@@ -86,14 +86,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const postCard = document.createElement('div');
         postCard.className = 'card post-card';
         postCard.dataset.id = post.id;
+        postCard.id = post.id;
         postCard.innerHTML = `
             <div class="card-body position-relative">
                 <div class="d-flex justify-content-between">
                     <span class="post-username">${post.author}</span>
                     <span class="post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</span>
-                    <button type="button" class="close" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#" onclick="deletePost(event, '${post.id}')">Delete</a>
+                            <a class="dropdown-item" href="#" onclick="hidePost(event, '${post.id}')">Hide</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="text-center post-date">${post.date}</div>
                 <p class="card-text mt-2">${post.content}</p>
@@ -121,17 +128,40 @@ document.addEventListener('DOMContentLoaded', (event) => {
         postContainer.appendChild(postCard);
 
         // Add event listeners for the new post buttons
-        postCard.querySelector('.close').addEventListener('click', () => deletePost(post.id));
         postCard.querySelector('.edit-button').addEventListener('click', () => editPost(post.id));
         postCard.querySelector('.comment-button').addEventListener('click', () => addComment(post.id));
         postCard.querySelector('.like-button').addEventListener('click', () => likePost(post.id));
+        postCard.querySelector('.delete-button').addEventListener('click', () => deletePost(post.id));
+        postCard.querySelector('.hide-button').addEventListener('click', () => hidePost(post.id));
     }
 
-    // Function to delete a post from the view only
-    function deletePost(id) {
-        document.querySelector(`[data-id="${id}"]`).remove();
-        updateMostLikedTags();
+    function deletePost(event, postId) {
+        event.preventDefault();
+        const postElement = document.querySelector(`[data-id="${postId}"]`);
+        if (postElement) {
+            postElement.remove();
+        }
+        const posts = JSON.parse(localStorage.getItem('posts')) || [];
+        const updatedPosts = posts.filter(post => post.id !== postId);
+        localStorage.setItem('posts', JSON.stringify(updatedPosts));
     }
+    
+    function hidePost(event, postId) {
+        event.preventDefault();
+        const postElement = document.querySelector(`[data-id="${postId}"]`);
+        if (postElement) {
+            postElement.style.display = 'none';
+        }
+        const posts = JSON.parse(localStorage.getItem('posts')) || [];
+        const updatedPosts = posts.map(post => {
+            if (post.id === postId) {
+                post.hidden = true;
+            }
+            return post;
+        });
+        localStorage.setItem('posts', JSON.stringify(updatedPosts));
+    }
+    
 
     // Function to edit a post
     function editPost(id) {
