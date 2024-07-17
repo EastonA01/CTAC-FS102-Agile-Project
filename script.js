@@ -13,22 +13,72 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Event listener to create a new post when the submit button is clicked
     if (submitPostButton) {
-        submitPostButton.addEventListener('click', () => {
+        submitPostButton.addEventListener('click', async () => {
             const postAuthor = document.querySelector('#postAuthor').value.trim();
             const postTags = document.querySelector('#postTags').value.trim().split(',').map(tag => tag.trim());
             const postContent = document.querySelector('#postContent').value.trim();
+            const postImage = document.querySelector('#postImage').files[0];
 
             if (postAuthor && postContent) {
-                createPost(postAuthor, postTags, postContent);
+                let imageBase64 = null;
+                if (postImage) {
+                    if (!['image/png', 'image/jpeg'].includes(postImage.type)) {
+                        alert('Please select a valid image file (PNG or JPG).');
+                        return;
+                    }
+                    imageBase64 = await toBase64(postImage);
+                }
+                createPost(postAuthor, postTags, postContent, imageBase64);
                 // Clear the form inputs
                 document.querySelector('#postAuthor').value = '';
                 document.querySelector('#postTags').value = '';
                 document.querySelector('#postContent').value = '';
+                document.querySelector('#postImage').value = '';
                 // Hide the modal after submitting
                 $(newPostModal).modal('hide');
             } else {
                 alert('Author and content cannot be empty.');
             }
+        });
+    }
+
+    // Function to convert file to Base64
+    function toBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                const img = new Image();
+                img.src = reader.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const maxWidth = 800; // Max width for the image
+                    const maxHeight = 600; // Max height for the image
+
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height *= maxWidth / width;
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width *= maxHeight / height;
+                            height = maxHeight;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const resizedBase64 = canvas.toDataURL('image/jpeg', 0.7); // Adjust the quality (0.7 for 70% quality)
+                    resolve(resizedBase64);
+                };
+            };
+            reader.onerror = error => reject(error);
         });
     }
 
@@ -41,7 +91,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 
     // Function to create a new post object and render it
-    function createPost(author, tags, content) {
+    function createPost(author, tags, content, imageBase64) {
         const postId = Date.now(); // Unique ID based on current timestamp
         const postDate = new Date().toLocaleString(); // Human-readable date
 
@@ -50,6 +100,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             author,
             tags: tags || [], // Ensure tags is an array
             content,
+            image: imageBase64, // Add image to post
             date: postDate,
             likes: 0, // Initialize likes to 0
         };
@@ -93,12 +144,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
             <div class="card-body position-relative">
                 <div class="d-flex justify-content-between">
                     <span class="post-username">${post.author}</span>
-                    <span class="post-date">${post.date}</span>
-                    <button type="button" class="close" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <span class="post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</span>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-dark btn-sm hide-button" aria-label="Hide">
+                            <span aria-hidden="true">Hide</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-danger btn-sm delete-button" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="text-center post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</div>
+                ${post.image ? `<img src="${post.image}" class="img-fluid mt-2" alt="Post Image">` : ''}
                 <p class="card-text mt-2">${post.content}</p>
                 <div class="d-flex justify-content-between mt-3">
                     <div>
@@ -114,7 +170,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 <div class="collapse mt-3" id="comments-section-${post.id}">
                     <div class="card card-body">
                         ${post.comments && post.comments.length > 0 ? post.comments.map(comment => `
-                            <p class="card-text"><strong>${comment.author}</strong> (${comment.date}): ${comment.content}</p>
+                            <p class="card-text">${comment.content}<br><small class="text-muted">by <strong>${comment.author}</strong> on (${comment.date}): </small></p>
                         `).join('') : '<p class="card-text">No comments yet.</p>'}
                     </div>
                 </div>
@@ -130,16 +186,35 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
 
         // Add event listeners for the new post buttons
-        postCard.querySelector('.close').addEventListener('click', () => deletePost(post.id));
         postCard.querySelector('.edit-button').addEventListener('click', () => editPost(post.id));
         postCard.querySelector('.comment-button').addEventListener('click', () => addComment(post.id));
         postCard.querySelector('.like-button').addEventListener('click', () => likePost(post.id));
+        postCard.querySelector('.delete-button').addEventListener('click', () => {
+            if (confirm('Are you sure you want to delete this post?')) {
+                deletePostFromLocalStorage(post.id);
+            }
+        });
+
+        postCard.querySelector('.hide-button').addEventListener('click', () => hidePost(post.id));
+    }
+
+// Function to delete a post from local storage and view
+    function deletePostFromLocalStorage(id) {
+        let posts = getPosts();
+        posts = posts.filter(post => post.id !== id);
+        localStorage.setItem('posts', JSON.stringify(posts));
+        deletePost(id);
     }
 
     // Function to delete a post from the view and update the tags
     function deletePost(id) {
         document.querySelector(`[data-id="${id}"]`).remove(); // Remove post from the DOM
         updateMostLikedTags(); // Update trending tags section
+    }
+
+    // Function to hide a post
+    function hidePost(id) {
+        document.querySelector(`[data-id="${id}"]`).style.display = 'none';
     }
 
     // Function to edit a post (placeholder for actual functionality)
@@ -177,8 +252,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Function to add a comment
     function addComment(id) {
-        $('#commentModal').modal('show');
-    
+            
         const submitCommentButton = document.querySelector('#submitCommentButton');
         submitCommentButton.onclick = function() {
             const commentAuthor = document.querySelector('#commentAuthor').value.trim();
@@ -210,9 +284,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
         };
     }
-
+/*
     //Display comments under posts
     //iteration for each instance of displayComment
+    const showComments = document.querySelector('#comments-button');
+    showComments.addEventListener('click', () => loadComments(posts.id));
     const loadComments = (id) => {
         for (let i = 0; i < comments.length; i++) {
             let comments = JSON.parse(`posts[${id}].comments[${i}]`) || ['No comments at this time.'];
@@ -230,7 +306,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         commentDiv.innerHTML = `<p class ="card-text">${comment.content}</p><small class="text-muted">Posted by ${comment.author} on ${comment.date}</small`;
         commentList.appendChild(commentDiv);
     };
-
+*/
     // Function to like a post
     function likePost(id) {
         let posts = getPosts(); // Retrieve posts from localStorage
@@ -264,7 +340,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const sortedTags = Object.entries(tagLikes).sort((a, b) => b[1] - a[1]);
 
         // Update the trending tags section in the DOM
-        mostLikedContainer.innerHTML = '<span style = "font-weight: bold">Trending Tags</span>';
+        mostLikedContainer.innerHTML = '<span style="font-weight: bold">Trending Tags</span>';
         sortedTags.forEach(([tag, likes]) => {
             const tagElement = document.createElement('div');
             tagElement.innerHTML = `<span style="font-weight: bold">#${tag}:</span> ${likes} likes`;
@@ -293,4 +369,3 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 });
-
