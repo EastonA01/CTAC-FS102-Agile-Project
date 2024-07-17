@@ -45,11 +45,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const post = {
             id: postId,
             author,
-            tags,
+            tags: tags || [], // Ensure tags is an array,
             content,
             date: postDate,
             likes: 0,
         };
+
+        console.log('Creating post:', post); // Log post details
 
         savePost(post);
         renderPost(post);
@@ -67,6 +69,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     function loadPosts() {
         const posts = getPosts();
         posts.forEach(post => {
+            console.log('Loading post:', post); // Log post details
             renderPost(post);
         });
         updateMostLikedTags();
@@ -74,7 +77,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Function to get posts from localStorage
     function getPosts() {
-        return JSON.parse(localStorage.getItem('posts')) || [];
+        const posts = JSON.parse(localStorage.getItem('posts'));
+        return Array.isArray(posts) ? posts : [];
     }
 
     // Function to render a post
@@ -86,7 +90,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             <div class="card-body position-relative">
                 <div class="d-flex justify-content-between">
                     <span class="post-username">${post.author}</span>
-                    <span class="post-tags">${post.tags.map(tag => `#${tag}`).join(', ')}</span>
+                    <span class="post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</span>
                     <button type="button" class="close" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -113,7 +117,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         // Append the new post card to the post container
         const welcomeCard = postContainer.querySelector('.welcome-card');
-        postContainer.insertBefore(postCard, welcomeCard.nextSibling);
+        // postContainer.insertBefore(postCard, welcomeCard.nextSibling);
         postContainer.appendChild(postCard);
 
         // Add event listeners for the new post buttons
@@ -166,18 +170,22 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const posts = getPosts();
         const tagLikes = {};
 
+        if (Array.isArray(posts)) {
         posts.forEach(post => {
-            post.tags.forEach(tag => {
-                if (!tagLikes[tag]) {
-                    tagLikes[tag] = 0;
-                }
-                tagLikes[tag] += post.likes;
-            });
+            if (Array.isArray(post.tags)) {
+                post.tags.forEach(tag => {
+                    if (!tagLikes[tag]) {
+                        tagLikes[tag] = 0;
+                    }
+                    tagLikes[tag] += post.likes;
+                });
+            }
         });
+    }
 
         const sortedTags = Object.entries(tagLikes).sort((a, b) => b[1] - a[1]);
 
-        mostLikedContainer.innerHTML = 'Most Liked';
+        mostLikedContainer.innerHTML = 'Trending Tags';
         sortedTags.forEach(([tag, likes]) => {
             const tagElement = document.createElement('div');
             tagElement.innerText = `${tag}: ${likes} likes`;
