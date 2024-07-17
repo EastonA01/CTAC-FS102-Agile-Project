@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 <div class="d-flex justify-content-between mt-3">
                     <div>
                         <span class="like-counter">Likes: ${post.likes}</span>
-                        <button type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#comments-section-${post.id}" aria-expanded="false" aria-controls="comments-section-${post.id}">Comments</button>
+                        <button type="button" class="btn btn-secondary btn-sm comments-button" data-toggle="collapse" data-target="#comments-section-${post.id}" aria-expanded="false" aria-controls="comments-section-${post.id}">Comments</button>
                     </div>
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-secondary btn-sm edit-button">Edit</button>
