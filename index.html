@@ -69,7 +69,7 @@
         </div>
     </div>
 
-    <button class="new-post-button" data-toggle="modal" data-target="#newPostModal">+</button>
+    <button class="new-post-button" data-toggle="modal" data-target="#newPostModal" data-toggle="tooltip" title="New Post">+</button>
 
     <div class="modal fade" id="newPostModal" tabindex="-1" role="dialog" aria-labelledby="newPostModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -89,6 +89,10 @@
                         <div class="form-group">
                             <label for="postTags">Tags (comma separated)</label>
                             <input type="text" class="form-control" id="postTags">
+                        </div>
+                        <div class="form-group">
+                            <label for="postImage">Image:</label>
+                            <input type="file" class="form-control" id="postImage" accept="image/*">
                         </div>
                         <div class="form-group">
                             <label for="postContent">Post Content</label>
@@ -136,5 +140,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 </body>
 </html>
