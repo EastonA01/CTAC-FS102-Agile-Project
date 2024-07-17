@@ -1,3 +1,17 @@
+/* Center the nav-card within the modal */
+.modal-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-card {
+    width: 100%;
+    max-width: 300px; /* Adjust as needed */
+    margin: 0 auto;
+}
+
+/* Rest of the styles */
 html {
     scroll-behavior: smooth;
 }
@@ -133,7 +147,7 @@ body {
 }
 
 .comments-button {
-    background-color:#004d7a;
+    background-color: #004d7a;
     border: none;
 }
 
@@ -199,4 +213,44 @@ body {
 .footer img {
     max-height: 30px; 
     width: auto;
+}
+
+/* Header styles for smaller screens */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .header .logo {
+        width: 200px; /* Adjust the width as needed */
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    .header h1 {
+        font-size: 1.5em;
+        margin: 0;
+    }
+
+    #show-nav-card {
+        display: block;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1001;
+    }
+    .nav-card {
+        width:100%;
+        align-items: center;
+    }
+}
+
+/* Sticky position adjustments for navigation and most liked cards on smaller screens */
+@media (max-width: 768px) {
+    .most-liked-card {
+        position: static;
+        width: 100%;
+        margin-bottom: 20px;
+    }
 }
