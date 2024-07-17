@@ -10,7 +10,7 @@ body {
 
 .new-post-button {
     position: fixed;
-    bottom: 50px;
+    bottom: 50px; /* Adjusted for no footer */
     left: 50%;
     transform: translateX(-50%);
     background-color: white;
@@ -93,6 +93,18 @@ body {
     font-weight: bold;
 }
 
+.post-tags {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.post-date {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 /* Styles for the buttons */
 .edit-button {
     background-color: #00bf72;
@@ -132,7 +144,6 @@ body {
     background-color: #85d900;
     color: white;
 }
-
 
 .unlike-button {
     background-color: #f44336;
