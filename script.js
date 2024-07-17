@@ -144,10 +144,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
             <div class="card-body position-relative">
                 <div class="d-flex justify-content-between">
                     <span class="post-username">${post.author}</span>
-                    <span class="post-date">${post.date}</span>
-                    <button type="button" class="close" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <span class="post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</span>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-dark btn-sm hide-button" aria-label="Hide">
+                            <span aria-hidden="true">Hide</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-danger btn-sm delete-button" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="text-center post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</div>
                 ${post.image ? `<img src="${post.image}" class="img-fluid mt-2" alt="Post Image">` : ''}
@@ -182,16 +187,35 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
 
         // Add event listeners for the new post buttons
-        postCard.querySelector('.close').addEventListener('click', () => deletePost(post.id));
         postCard.querySelector('.edit-button').addEventListener('click', () => editPost(post.id));
         postCard.querySelector('.comment-button').addEventListener('click', () => addComment(post.id));
         postCard.querySelector('.like-button').addEventListener('click', () => likePost(post.id));
+        postCard.querySelector('.delete-button').addEventListener('click', () => {
+            if (confirm('Are you sure you want to delete this post?')) {
+                deletePostFromLocalStorage(post.id);
+            }
+        });
+
+        postCard.querySelector('.hide-button').addEventListener('click', () => hidePost(post.id));
+    }
+
+// Function to delete a post from local storage and view
+    function deletePostFromLocalStorage(id) {
+        let posts = getPosts();
+        posts = posts.filter(post => post.id !== id);
+        localStorage.setItem('posts', JSON.stringify(posts));
+        deletePost(id);
     }
 
     // Function to delete a post from the view and update the tags
     function deletePost(id) {
         document.querySelector(`[data-id="${id}"]`).remove(); // Remove post from the DOM
         updateMostLikedTags(); // Update trending tags section
+    }
+
+    // Function to hide a post
+    function hidePost(id) {
+        document.querySelector(`[data-id="${id}"]`).style.display = 'none';
     }
 
     // Function to edit a post (placeholder for actual functionality)
