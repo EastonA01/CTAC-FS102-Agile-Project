@@ -132,6 +132,16 @@ body {
     color: white;
 }
 
+.comments-button {
+    background-color:#004d7a;
+    border: none;
+}
+
+.comments-button:hover {
+    background-color: #003a53;
+    color: white;
+}
+
 .like-button {
     background-color: #a8eb12;
     color: white;

@@ -103,6 +103,68 @@
             </div>
         </div>
     </div>
+    <!-- Edit Posts Modal -->
+    <div class="modal fade" id="editPostModal" tabindex="-1" role="dialog" aria-labelledby="editPostModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPostModalLabel">Edit Post</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="editPostAuthor">Author</label>
+                            <input type="text" class="form-control" id="editPostAuthor" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPostTags">Tags (comma separated)</label>
+                            <input type="text" class="form-control" id="editPostTags">
+                        </div>
+                        <div class="form-group">
+                            <label for="editPostContent">Post Content</label>
+                            <textarea class="form-control" id="editPostContent" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="submitEditPostButton">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Comments Modal -->
+    <div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="commentModalLabel">Add Comment</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="commentAuthor">Author</label>
+                            <input type="text" class="form-control" id="commentAuthor">
+                        </div>
+                        <div class="form-group">
+                            <label for="commentContent">Comment</label>
+                            <textarea class="form-control" id="commentContent" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="submitCommentButton">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer class="footer text-white py-2">
         <div class="container">

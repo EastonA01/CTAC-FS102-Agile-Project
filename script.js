@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 <div class="d-flex justify-content-between mt-3">
                     <div>
                         <span class="like-counter">Likes: ${post.likes}</span>
-                        <button type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#comments-section-${post.id}" aria-expanded="false" aria-controls="comments-section-${post.id}">Comments</button>
+                        <button type="button" class="btn btn-secondary btn-sm comments-button" data-toggle="collapse" data-target="#comments-section-${post.id}" aria-expanded="false" aria-controls="comments-section-${post.id}">Comments</button>
                     </div>
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-secondary btn-sm edit-button">Edit</button>
@@ -113,7 +113,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 </div>
                 <div class="collapse mt-3" id="comments-section-${post.id}">
                     <div class="card card-body">
-                        <p class="card-text">No comments yet.</p>
+                        ${post.comments && post.comments.length > 0 ? post.comments.map(comment => `
+                            <p class="card-text"><strong>${comment.author}</strong> (${comment.date}): ${comment.content}</p>
+                        `).join('') : '<p class="card-text">No comments yet.</p>'}
                     </div>
                 </div>
             </div>
@@ -142,12 +144,71 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Function to edit a post (placeholder for actual functionality)
     function editPost(id) {
-        alert('Section coming soon.');
+        const postCard = document.querySelector(`[data-id="${id}"]`);
+        const postAuthor = postCard.querySelector('.post-username').innerText;
+        const postTags = postCard.querySelector('.post-tags').innerText.split(', ').map(tag => tag.replace('#', '')).join(', ');
+        const postContent = postCard.querySelector('.card-text').innerText;
+    
+        document.querySelector('#editPostAuthor').value = postAuthor;
+        document.querySelector('#editPostTags').value = postTags;
+        document.querySelector('#editPostContent').value = postContent;
+    
+        $('#editPostModal').modal('show');
+    
+        const submitEditPostButton = document.querySelector('#submitEditPostButton');
+        submitEditPostButton.onclick = function() {
+            const updatedTags = document.querySelector('#editPostTags').value.trim().split(',').map(tag => tag.trim());
+            const updatedContent = document.querySelector('#editPostContent').value.trim();
+    
+            if (updatedContent) {
+                let posts = getPosts();
+                const post = posts.find(post => post.id === id);
+                post.tags = updatedTags;
+                post.content = updatedContent;
+                localStorage.setItem('posts', JSON.stringify(posts));
+                postCard.querySelector('.post-tags').innerText = updatedTags.map(tag => `#${tag}`).join(', ');
+                postCard.querySelector('.card-text').innerText = updatedContent;
+                $('#editPostModal').modal('hide');
+            } else {
+                alert('Content cannot be empty.');
+            }
+        };
     }
 
-    // Function to add a comment (placeholder for actual functionality)
+    // Function to add a comment
     function addComment(id) {
-        alert('Section coming soon.');
+        $('#commentModal').modal('show');
+    
+        const submitCommentButton = document.querySelector('#submitCommentButton');
+        submitCommentButton.onclick = function() {
+            const commentAuthor = document.querySelector('#commentAuthor').value.trim();
+            const commentContent = document.querySelector('#commentContent').value.trim();
+    
+            if (commentAuthor && commentContent) {
+                let posts = getPosts();
+                const post = posts.find(post => post.id === id);
+                if (!post.comments) {
+                    post.comments = [];
+                }
+                post.comments.push({
+                    author: commentAuthor,
+                    content: commentContent,
+                    date: new Date().toLocaleString()
+                });
+                localStorage.setItem('posts', JSON.stringify(posts));
+    
+                const commentsSection = document.querySelector(`#comments-section-${id} .card-body`);
+                commentsSection.innerHTML += `
+                    <p class="card-text"><strong>${commentAuthor}</strong> (${new Date().toLocaleString()}): ${commentContent}</p>
+                `;
+    
+                document.querySelector('#commentAuthor').value = '';
+                document.querySelector('#commentContent').value = '';
+                $('#commentModal').modal('hide');
+            } else {
+                alert('Author and content cannot be empty.');
+            }
+        };
     }
 
     //Display comments under posts
