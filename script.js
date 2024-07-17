@@ -138,3 +138,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 });
+
+//JEllis - Display comments needs some editing
+//Display comments under posts
+//iteration for each instance of displayComment
+const loadComments = (postId) => {
+    for (let i = 0; i < comments.length; i++) {
+        let comments = JSON.parse(`comments-post-${i}`) || ['No comments at this time.']; // Find and use term from add comment
+        comments.forEach(comment => {
+            displayComment(i, comment);
+        });
+    }
+};
+
+//Function to display a comment in the comment section of a post card
+const displayComment = (i, comment) => {
+    const commentList = document.getElementById(`comments-section-1`);
+    const commentDiv = document.createElement('div');
+    commentDiv.className = 'card card-body';
+    commentDiv.innerHTML = `<p class ="card-text">${comment.text}</p>`;
+    commentList.appendChild(commentDiv);
+};
