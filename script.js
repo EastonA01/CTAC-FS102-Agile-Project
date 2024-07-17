@@ -154,7 +154,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         </button>
                     </div>
                 </div>
-                <div class="text-center post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</div>
                 ${post.image ? `<img src="${post.image}" class="img-fluid mt-2" alt="Post Image">` : ''}
                 <p class="card-text mt-2">${post.content}</p>
                 <div class="d-flex justify-content-between mt-3">
