@@ -110,6 +110,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 </div>
             </div>
         `;
+
+        // Append the new post card to the post container
+        const welcomeCard = postContainer.querySelector('.welcome-card');
+        postContainer.insertBefore(postCard, welcomeCard.nextSibling);
         postContainer.appendChild(postCard);
 
         // Add event listeners for the new post buttons
@@ -200,5 +204,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 searchButton.click();
             }
         });
+
     }
+
 });

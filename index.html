@@ -9,14 +9,15 @@
     <link href="styles.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
+
 <body>
     <div class="container">
-        <div class="row my-3">
-            <div class="col-12 text-center">
-                <img src="inkling logo.png" alt="Logo" class="float-left" style="max-height: 50px;">
-                <h1>INKLING</h1>
-            </div>
-        </div>
+        <header class="header d-flex align-items-center justify-content-center my-3">
+            <img src="inkling logo.png" alt="Logo" class="logo">
+            <!-- Main title of the app -->
+            <h1 class="ml-3">INKLING</h1>
+        </header>
+
         <div class="row">
             <div class="col-md-3">
                 <div class="card nav-card">
@@ -37,6 +38,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Main content area for welcome message and posts -->
             <div class="col-md-6">
                 <div class="card welcome-card">
                     <div class="card-body">
@@ -54,6 +57,8 @@
                     <!-- Posts will be dynamically added here -->
                 </div>
             </div>
+
+            <!-- Right sidebar for most liked posts -->
             <div class="col-md-3">
                 <div class="card most-liked-card">
                     <div class="card-body">
@@ -98,7 +103,34 @@
             </div>
         </div>
     </div>
-    
+
+    <footer class="footer text-white py-2">
+        <div class="container">
+            <div class="row">
+                <!-- Brand and Description -->
+                <div class="col-md-4">
+                    <img src="inkling logo.png" alt="Logo" class="mb-2">
+                    <p>Connect with your friends and the world around you on Inkling.</p>
+                </div>
+                <!-- Legal Information -->
+                <div class="col-md-4">
+                    <h5>Legal</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="text-white">Terms of Service</a></li>
+                        <li><a href="#" class="text-white">Cookie Policy</a></li>
+                        <li><a href="#" class="text-white">Data Protection</a></li>
+                    </ul>
+                </div>
+                <!-- Copyright Information -->
+                <div class="col-md-4 text-md-right">
+                    <p>&copy; 2024 Inkling. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Link to custom script file -->
     <script src="script.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
