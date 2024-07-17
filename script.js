@@ -92,10 +92,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     <span class="post-username">${post.author}</span>
                     <span class="post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</span>
                     <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-outline-dark hide-button" aria-label="Hide">
+                        <button type="button" class="btn btn-outline-dark btn-sm hide-button" aria-label="Hide">
                             <span aria-hidden="true">Hide</span>
                         </button>
-                        <button type="button" class="btn btn-danger delete-button" aria-label="Close">
+                        <button type="button" class="btn btn-outline-danger btn-sm delete-button" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
