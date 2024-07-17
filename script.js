@@ -110,7 +110,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 </div>
                 <div class="collapse mt-3" id="comments-section-${post.id}">
                     <div class="card card-body">
-                        <p class="card-text">No comments yet.</p>
+                        ${post.comments && post.comments.length > 0 ? post.comments.map(comment => `
+                            <p class="card-text"><strong>${comment.author}</strong> (${comment.date}): ${comment.content}</p>
+                        `).join('') : '<p class="card-text">No comments yet.</p>'}
                     </div>
                 </div>
             </div>
@@ -119,7 +121,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         // Append the new post card to the post container
         const welcomeCard = postContainer.querySelector('.welcome-card');
         postContainer.appendChild(postCard);
-
+    
         // Add event listeners for the new post buttons
         postCard.querySelector('.close').addEventListener('click', () => deletePost(post.id));
         postCard.querySelector('.edit-button').addEventListener('click', () => editPost(post.id));
@@ -166,9 +168,40 @@ document.addEventListener('DOMContentLoaded', (event) => {
         };
     }
 
-    // Function to add a comment (for simplicity, it just alerts in this example)
+    // Function to add a comment
     function addComment(id) {
-        alert('Section coming soon.');
+        $('#commentModal').modal('show');
+    
+        const submitCommentButton = document.querySelector('#submitCommentButton');
+        submitCommentButton.onclick = function() {
+            const commentAuthor = document.querySelector('#commentAuthor').value.trim();
+            const commentContent = document.querySelector('#commentContent').value.trim();
+    
+            if (commentAuthor && commentContent) {
+                let posts = getPosts();
+                const post = posts.find(post => post.id === id);
+                if (!post.comments) {
+                    post.comments = [];
+                }
+                post.comments.push({
+                    author: commentAuthor,
+                    content: commentContent,
+                    date: new Date().toLocaleString()
+                });
+                localStorage.setItem('posts', JSON.stringify(posts));
+    
+                const commentsSection = document.querySelector(`#comments-section-${id} .card-body`);
+                commentsSection.innerHTML += `
+                    <p class="card-text"><strong>${commentAuthor}</strong> (${new Date().toLocaleString()}): ${commentContent}</p>
+                `;
+    
+                document.querySelector('#commentAuthor').value = '';
+                document.querySelector('#commentContent').value = '';
+                $('#commentModal').modal('hide');
+            } else {
+                alert('Author and content cannot be empty.');
+            }
+        };
     }
 
     // Function to like a post
