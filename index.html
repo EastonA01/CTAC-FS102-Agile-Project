@@ -14,7 +14,6 @@
     <div class="container">
         <header class="header d-flex align-items-center justify-content-center my-3">
             <img src="inkling logo.png" alt="Logo" class="logo">
-            <!-- Main title of the app -->
             <h1 class="ml-3">INKLING</h1>
         </header>
 
@@ -30,16 +29,19 @@
                                 <a class="nav-link" href="#" id="search-button-nav"><i class="fas fa-search"></i> Search</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#"><i class="fas fa-bell"></i> Notifications</a></li>
+                                <a class="nav-link" href="#"><i class="fas fa-bell"></i> Notifications</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#" id="load-posts-button"><i class="fas fa-sync-alt"></i> Load All Posts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" id="login-button"><i class="fas fa-user"></i> Login</a>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
 
-            <!-- Main content area for welcome message and posts -->
             <div class="col-md-6">
                 <div class="card welcome-card">
                     <div class="card-body">
@@ -58,11 +60,10 @@
                 </div>
             </div>
 
-            <!-- Right sidebar for most liked posts -->
             <div class="col-md-3">
                 <div class="card most-liked-card">
                     <div class="card-body">
-                        Most Liked
+                        Trending Tags
                     </div>
                 </div>
             </div>
@@ -84,7 +85,7 @@
                     <form>
                         <div class="form-group">
                             <label for="postAuthor">Author</label>
-                            <input type="text" class="form-control" id="postAuthor">
+                            <input type="text" class="form-control" id="postAuthor" readonly>
                         </div>
                         <div class="form-group">
                             <label for="postTags">Tags (comma separated)</label>
@@ -104,15 +105,34 @@
         </div>
     </div>
 
+    <!-- Modal for Login -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="loginUsername" class="form-control" placeholder="Username">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="loginSubmitButton" class="btn btn-primary">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer text-white py-2">
         <div class="container">
             <div class="row">
-                <!-- Brand and Description -->
                 <div class="col-md-4">
                     <img src="inkling logo.png" alt="Logo" class="mb-2">
                     <p>Connect with your friends and the world around you on Inkling.</p>
                 </div>
-                <!-- Legal Information -->
                 <div class="col-md-4">
                     <h5>Legal</h5>
                     <ul class="list-unstyled">
@@ -122,7 +142,6 @@
                         <li><a href="#" class="text-white">Data Protection</a></li>
                     </ul>
                 </div>
-                <!-- Copyright Information -->
                 <div class="col-md-4 text-md-right">
                     <p>&copy; 2024 Inkling. All rights reserved.</p>
                 </div>
@@ -130,11 +149,10 @@
         </div>
     </footer>
 
-    <!-- Link to custom script file -->
-    <script src="script.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

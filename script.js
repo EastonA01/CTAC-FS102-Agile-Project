@@ -6,6 +6,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const searchBar = document.querySelector('#search-bar');
     const mostLikedContainer = document.querySelector('.most-liked-card .card-body');
     const loadPostsButton = document.querySelector('#load-posts-button');
+    const loginButton = document.querySelector('#login-button');
+    const loginSubmitButton = document.querySelector('#loginSubmitButton');
+    const loginModal = document.querySelector('#loginModal');
+    const postAuthorField = document.querySelector('#postAuthor');
+
+    let loggedInUser = localStorage.getItem('loggedInUser') || '';
+
+    // Update the author field in the new post modal
+    if (loggedInUser) {
+        postAuthorField.value = loggedInUser;
+    }
 
     // Load posts from localStorage
     loadPosts();
@@ -13,18 +24,39 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Event listener to create a new post
     if (submitPostButton) {
         submitPostButton.addEventListener('click', () => {
-            const postAuthor = document.querySelector('#postAuthor').value.trim();
+            const postAuthor = loggedInUser;
             const postTags = document.querySelector('#postTags').value.trim().split(',').map(tag => tag.trim());
             const postContent = document.querySelector('#postContent').value.trim();
 
             if (postAuthor && postContent) {
                 createPost(postAuthor, postTags, postContent);
-                document.querySelector('#postAuthor').value = '';
                 document.querySelector('#postTags').value = '';
                 document.querySelector('#postContent').value = '';
                 $(newPostModal).modal('hide');
             } else {
                 alert('Author and content cannot be empty.');
+            }
+        });
+    }
+
+    // Event listener for login button
+    if (loginButton) {
+        loginButton.addEventListener('click', () => {
+            $(loginModal).modal('show');
+        });
+    }
+
+    // Event listener for login submit button
+    if (loginSubmitButton) {
+        loginSubmitButton.addEventListener('click', () => {
+            const username = document.querySelector('#loginUsername').value.trim();
+            if (username) {
+                loggedInUser = username;
+                localStorage.setItem('loggedInUser', loggedInUser);
+                postAuthorField.value = loggedInUser;
+                $(loginModal).modal('hide');
+            } else {
+                alert('Username cannot be empty.');
             }
         });
     }
@@ -45,13 +77,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const post = {
             id: postId,
             author,
-            tags: tags || [], // Ensure tags is an array,
+            tags,
             content,
             date: postDate,
             likes: 0,
         };
-
-        console.log('Creating post:', post); // Log post details
 
         savePost(post);
         renderPost(post);
@@ -69,7 +99,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     function loadPosts() {
         const posts = getPosts();
         posts.forEach(post => {
-            console.log('Loading post:', post); // Log post details
             renderPost(post);
         });
         updateMostLikedTags();
@@ -77,8 +106,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Function to get posts from localStorage
     function getPosts() {
-        const posts = JSON.parse(localStorage.getItem('posts'));
-        return Array.isArray(posts) ? posts : [];
+        return JSON.parse(localStorage.getItem('posts')) || [];
     }
 
     // Function to render a post
@@ -90,7 +118,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             <div class="card-body position-relative">
                 <div class="d-flex justify-content-between">
                     <span class="post-username">${post.author}</span>
-                    <span class="post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</span>
+                    <span class="post-tags">${post.tags.map(tag => `#${tag}`).join(', ')}</span>
                     <button type="button" class="close" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -114,10 +142,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 </div>
             </div>
         `;
-
-        // Append the new post card to the post container
-        const welcomeCard = postContainer.querySelector('.welcome-card');
-        // postContainer.insertBefore(postCard, welcomeCard.nextSibling);
         postContainer.appendChild(postCard);
 
         // Add event listeners for the new post buttons
@@ -170,22 +194,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const posts = getPosts();
         const tagLikes = {};
 
-        if (Array.isArray(posts)) {
         posts.forEach(post => {
-            if (Array.isArray(post.tags)) {
-                post.tags.forEach(tag => {
-                    if (!tagLikes[tag]) {
-                        tagLikes[tag] = 0;
-                    }
-                    tagLikes[tag] += post.likes;
-                });
-            }
+            post.tags.forEach(tag => {
+                if (!tagLikes[tag]) {
+                    tagLikes[tag] = 0;
+                }
+                tagLikes[tag] += post.likes;
+            });
         });
-    }
 
         const sortedTags = Object.entries(tagLikes).sort((a, b) => b[1] - a[1]);
 
-        mostLikedContainer.innerHTML = 'Trending Tags';
+        mostLikedContainer.innerHTML = 'Most Liked';
         sortedTags.forEach(([tag, likes]) => {
             const tagElement = document.createElement('div');
             tagElement.innerText = `${tag}: ${likes} likes`;
