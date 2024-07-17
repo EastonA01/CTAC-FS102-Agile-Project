@@ -10,7 +10,7 @@ body {
 
 .new-post-button {
     position: fixed;
-    bottom: 20px; /* Adjusted for no footer */
+    bottom: 50px; /* Adjusted for no footer */
     left: 50%;
     transform: translateX(-50%);
     background-color: white;

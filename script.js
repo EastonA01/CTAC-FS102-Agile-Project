@@ -90,16 +90,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
             <div class="card-body position-relative">
                 <div class="d-flex justify-content-between">
                     <span class="post-username">${post.author}</span>
-                    <span class="post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</span>
+                    <span class="post-date">${post.date}</span>
                     <button type="button" class="close" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="text-center post-date">${post.date}</div>
+                <div class="text-center post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</div>
                 <p class="card-text mt-2">${post.content}</p>
                 <div class="d-flex justify-content-between mt-3">
                     <div>
                         <span class="like-counter">Likes: ${post.likes}</span>
+                        <button type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#comments-section-${post.id}" aria-expanded="false" aria-controls="comments-section-${post.id}">Comments</button>
                     </div>
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-secondary btn-sm edit-button">Edit</button>
@@ -117,7 +118,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         // Append the new post card to the post container
         const welcomeCard = postContainer.querySelector('.welcome-card');
-        // postContainer.insertBefore(postCard, welcomeCard.nextSibling);
         postContainer.appendChild(postCard);
 
         // Add event listeners for the new post buttons
@@ -135,24 +135,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Function to edit a post
     function editPost(id) {
-        const postCard = document.querySelector(`[data-id="${id}"]`);
-        const postContent = postCard.querySelector('.card-text').innerText;
-        const newContent = prompt('Edit your post:', postContent);
-        if (newContent) {
-            let posts = getPosts();
-            const post = posts.find(post => post.id === id);
-            post.content = newContent;
-            localStorage.setItem('posts', JSON.stringify(posts));
-            postCard.querySelector('.card-text').innerText = newContent;
-        }
+        alert ('Section coming soon.');
     }
 
     // Function to add a comment (for simplicity, it just alerts in this example)
     function addComment(id) {
-        const comment = prompt('Enter your comment:');
-        if (comment) {
-            alert('Comment added: ' + comment);
-        }
+        alert('Section coming soon.');
     }
 
     // Function to like a post
@@ -171,17 +159,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const tagLikes = {};
 
         if (Array.isArray(posts)) {
-        posts.forEach(post => {
-            if (Array.isArray(post.tags)) {
-                post.tags.forEach(tag => {
-                    if (!tagLikes[tag]) {
-                        tagLikes[tag] = 0;
-                    }
-                    tagLikes[tag] += post.likes;
-                });
-            }
-        });
-    }
+            posts.forEach(post => {
+                if (Array.isArray(post.tags)) {
+                    post.tags.forEach(tag => {
+                        if (!tagLikes[tag]) {
+                            tagLikes[tag] = 0;
+                        }
+                        tagLikes[tag] += post.likes;
+                    });
+                }
+            });
+        }
 
         const sortedTags = Object.entries(tagLikes).sort((a, b) => b[1] - a[1]);
 
@@ -212,7 +200,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 searchButton.click();
             }
         });
-
     }
 
 });
