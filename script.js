@@ -1,87 +1,115 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize a counter to assign unique IDs to each post
-    let postIdCounter = 2;
+document.addEventListener('DOMContentLoaded', (event) => {
+    const newPostModal = document.querySelector('#newPostModal');
+    const submitPostButton = document.querySelector('#submitPostButton');
+    const postContainer = document.querySelector('#post-container');
+    const searchButton = document.querySelector('#search-button');
+    const searchBar = document.querySelector('#search-bar');
+    const mostLikedContainer = document.querySelector('.most-liked-card .card-body');
+    const loadPostsButton = document.querySelector('#load-posts-button');
 
-    // Get references to the submit button and the textarea for the new post content
-    const submitButton = document.querySelector('.modal-footer .btn-primary');
-    const postContent = document.getElementById('postContent');
+    // Load posts from localStorage
+    loadPosts();
 
-    // Add an event listener to the submit button to handle the click event
-    submitButton.addEventListener('click', function() {
-        handleSubmit();
-    });
+    // Event listener to create a new post
+    if (submitPostButton) {
+        submitPostButton.addEventListener('click', () => {
+            const postAuthor = document.querySelector('#postAuthor').value.trim();
+            const postTags = document.querySelector('#postTags').value.trim().split(',').map(tag => tag.trim());
+            const postContent = document.querySelector('#postContent').value.trim();
 
-    // Function to handle the submission of a new post
-    function handleSubmit() {
-        // Get the trimmed text from the textarea
-        const postText = postContent.value.trim();
-
-        // If the text is not empty, proceed to add the post
-        if (postText) {
-            // Add the post to the post container
-            addPost(postText, postIdCounter);
-
-            // Clear the textarea
-            postContent.value = '';
-
-            // Hide the modal
-            $('#newPostModal').modal('hide');
-
-            // Increment the counter for the next post
-            postIdCounter++;
-        }
+            if (postAuthor && postContent) {
+                createPost(postAuthor, postTags, postContent);
+                document.querySelector('#postAuthor').value = '';
+                document.querySelector('#postTags').value = '';
+                document.querySelector('#postContent').value = '';
+                $(newPostModal).modal('hide');
+            } else {
+                alert('Author and content cannot be empty.');
+            }
+        });
     }
 
-    // Event listener to focus the search bar when the search button in the nav is clicked
-    const searchButtonNav = document.getElementById('search-button-nav');
-    const searchBar = document.getElementById('search-bar');
-    
-    searchButtonNav.addEventListener('click', function() {
-        searchBar.focus();
-    });
+    // Event listener to load all posts
+    if (loadPostsButton) {
+        loadPostsButton.addEventListener('click', () => {
+            postContainer.innerHTML = '';
+            loadPosts();
+        });
+    }
 
-    // Scroll to the top of the page when the Home button is clicked
-    document.getElementById('home-button').addEventListener('click', function() {
-        window.scrollTo(0, 0);
-    });
+    // Function to create a new post
+    function createPost(author, tags, content) {
+        const postId = Date.now();
+        const postDate = new Date().toLocaleString();
 
-    // Function to add a new post to the post container
-    function addPost(content, id) {
-        console.log("Adding post:", content);
-        const date = Date.now();
+        const post = {
+            id: postId,
+            author,
+            tags: tags || [], // Ensure tags is an array,
+            content,
+            date: postDate,
+            likes: 0,
+        };
 
-        // Get the post container where posts will be appended
-        const postContainer = document.querySelector('.col-md-6');
+        console.log('Creating post:', post); // Log post details
 
-        // Create a new div element for the post card
+        savePost(post);
+        renderPost(post);
+        updateMostLikedTags();
+    }
+
+    // Function to save a post to localStorage
+    function savePost(post) {
+        const posts = getPosts();
+        posts.push(post);
+        localStorage.setItem('posts', JSON.stringify(posts));
+    }
+
+    // Function to load posts from localStorage
+    function loadPosts() {
+        const posts = getPosts();
+        posts.forEach(post => {
+            console.log('Loading post:', post); // Log post details
+            renderPost(post);
+        });
+        updateMostLikedTags();
+    }
+
+    // Function to get posts from localStorage
+    function getPosts() {
+        const posts = JSON.parse(localStorage.getItem('posts'));
+        return Array.isArray(posts) ? posts : [];
+    }
+
+    // Function to render a post
+    function renderPost(post) {
         const postCard = document.createElement('div');
         postCard.className = 'card post-card';
-
-        // Set the inner HTML of the post card with the content and buttons
+        postCard.dataset.id = post.id;
         postCard.innerHTML = `
             <div class="card-body position-relative">
                 <div class="d-flex justify-content-between">
-                    <span class="post-username">Username</span>
-                    <span class="post-date">${new Date(date).toLocaleString()}</span>
+                    <span class="post-username">${post.author}</span>
+                    <span class="post-date">${post.date}</span>
                     <button type="button" class="close" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <p class="card-text mt-2">${content}</p>
+                <div class="text-center post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</div>
+                <p class="card-text mt-2">${post.content}</p>
                 <div class="d-flex justify-content-between mt-3">
-                    <div class="d-flex align-items-center">
-                        <span class="like-counter mr-3" id="like-counter-${id}">Likes: 0</span>
-                        <button type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#comments-section-${id}" aria-expanded="false" aria-controls="comments-section-${id}">Comments</button>
+                    <div>
+                        <span class="like-counter">Likes: ${post.likes}</span>
+                        <button type="button" class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#comments-section-${post.id}" aria-expanded="false" aria-controls="comments-section-${post.id}">Comments</button>
                     </div>
                     <div class="btn-group" role="group">
-                        <button type="button" id="edit-button-${id}" class="btn btn-secondary btn-sm edit-button">Edit</button>
-                        <button type="button" id="comment-button-${id}" class="btn btn-secondary btn-sm comment-button">Comment</button>
-                        <button type="button" id="like-button-${id}" class="btn btn-secondary btn-sm like-button">Like</button>
+                        <button type="button" class="btn btn-secondary btn-sm edit-button">Edit</button>
+                        <button type="button" class="btn btn-secondary btn-sm comment-button">Comment</button>
+                        <button type="button" class="btn btn-secondary btn-sm like-button">Like</button>
                     </div>
                 </div>
-                <div class="collapse mt-3" id="comments-section-${id}">
+                <div class="collapse mt-3" id="comments-section-${post.id}">
                     <div class="card card-body">
-                        <!-- Comments will be dynamically added here -->
                         <p class="card-text">No comments yet.</p>
                     </div>
                 </div>
@@ -90,74 +118,88 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Append the new post card to the post container
         const welcomeCard = postContainer.querySelector('.welcome-card');
-        postContainer.insertBefore(postCard, welcomeCard.nextSibling);
+        postContainer.appendChild(postCard);
 
-        // Add event listeners for the like, edit, comment, and delete buttons
-        addEventListeners(postCard, id, content);
+        // Add event listeners for the new post buttons
+        postCard.querySelector('.close').addEventListener('click', () => deletePost(post.id));
+        postCard.querySelector('.edit-button').addEventListener('click', () => editPost(post.id));
+        postCard.querySelector('.comment-button').addEventListener('click', () => addComment(post.id));
+        postCard.querySelector('.like-button').addEventListener('click', () => likePost(post.id));
     }
 
-    // Function to add event listeners to the buttons in a post card
-    function addEventListeners(postCard, id, content) {
-        const likeButton = postCard.querySelector(`#like-button-${id}`);
-        const likeCounter = postCard.querySelector(`#like-counter-${id}`);
-        const deleteButton = postCard.querySelector('.close');
-        const editButton = postCard.querySelector(`#edit-button-${id}`);
-        const commentButton = postCard.querySelector(`#comment-button-${id}`);
+    // Function to delete a post from the view only
+    function deletePost(id) {
+        document.querySelector(`[data-id="${id}"]`).remove();
+        updateMostLikedTags();
+    }
 
-        // Event listener for the like button
-        likeButton.addEventListener('click', function() {
-            const currentLikes = parseInt(likeCounter.textContent.split(': ')[1]);
-            if (likeButton.textContent === 'Like') {
-                likeCounter.textContent = `Likes: ${currentLikes + 1}`;
-                likeButton.textContent = 'Unlike';
-                likeButton.classList.remove('like-button');
-                likeButton.classList.add('unlike-button');
-            } else {
-                likeCounter.textContent = `Likes: ${currentLikes - 1}`;
-                likeButton.textContent = 'Like';
-                likeButton.classList.remove('unlike-button');
-                likeButton.classList.add('like-button');
-            }
-        });
+    // Function to edit a post
+    function editPost(id) {
+        alert ('Section coming soon.');
+    }
 
-        // Event listener for the edit button
-        editButton.addEventListener('click', function() {
-            // alert ("Feature coming soon!");
-            const newContent = prompt("Edit your post:", content);
-            if (newContent !== null) {
-                // Update the content in the DOM
-                postCard.querySelector('.card-text').textContent = newContent;
-        
-                // Retrieve the posts from local storage
-                let posts = JSON.parse(localStorage.getItem('posts')) || [];
-        
-                // Find the post to be edited (assuming each post has a unique ID)
-                let postId = postCard.getAttribute('data-post-id');
-                let postIndex = posts.findIndex(post => post.id === postId);
-        
-                // Update the post content in the array
-                if (postIndex !== -1) {
-                    posts[postIndex].content = newContent;
-        
-                    // Save the updated posts array back to local storage
-                    localStorage.setItem('posts', JSON.stringify(posts));
-                } else {
-                    console.error('Post not found in local storage');
+    // Function to add a comment (for simplicity, it just alerts in this example)
+    function addComment(id) {
+        alert('Section coming soon.');
+    }
+
+    // Function to like a post
+    function likePost(id) {
+        let posts = getPosts();
+        const post = posts.find(post => post.id === id);
+        post.likes += 1;
+        localStorage.setItem('posts', JSON.stringify(posts));
+        document.querySelector(`[data-id="${id}"] .like-counter`).innerText = `Likes: ${post.likes}`;
+        updateMostLikedTags();
+    }
+
+    // Function to update the "Most Liked" tags
+    function updateMostLikedTags() {
+        const posts = getPosts();
+        const tagLikes = {};
+
+        if (Array.isArray(posts)) {
+            posts.forEach(post => {
+                if (Array.isArray(post.tags)) {
+                    post.tags.forEach(tag => {
+                        if (!tagLikes[tag]) {
+                            tagLikes[tag] = 0;
+                        }
+                        tagLikes[tag] += post.likes;
+                    });
                 }
-            }
-        });
+            });
+        }
 
-        // Event listener for the comment button
-        commentButton.addEventListener('click', function() {
-            alert("Feature coming soon!");
-        });
+        const sortedTags = Object.entries(tagLikes).sort((a, b) => b[1] - a[1]);
 
-        // Event listener for the delete button
-        deleteButton.addEventListener('click', function() {
-            postCard.remove();
+        mostLikedContainer.innerHTML = 'Trending Tags';
+        sortedTags.forEach(([tag, likes]) => {
+            const tagElement = document.createElement('div');
+            tagElement.innerText = `${tag}: ${likes} likes`;
+            mostLikedContainer.appendChild(tagElement);
         });
-
     }
 
+    // Event listener for the search button
+    if (searchButton) {
+        searchButton.addEventListener('click', () => {
+            const searchTerm = searchBar.value.toLowerCase();
+            const posts = getPosts();
+            postContainer.innerHTML = '';
+            posts
+                .filter(post => post.tags.some(tag => tag.toLowerCase().includes(searchTerm)) || post.content.toLowerCase().includes(searchTerm))
+                .forEach(post => renderPost(post));
+        });
+    }
+
+    // Event listener for pressing "Enter" key in the search bar
+    if (searchBar) {
+        searchBar.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchButton.click();
+            }
+        });
+    }
 
 });

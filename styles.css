@@ -10,7 +10,7 @@ body {
 
 .new-post-button {
     position: fixed;
-    bottom: 50px;
+    bottom: 50px; /* Adjusted for no footer */
     left: 50%;
     transform: translateX(-50%);
     background-color: white;
@@ -24,6 +24,7 @@ body {
     font-size: 30px;
     box-shadow: 0 0 16px 4px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease;
+    z-index: 1000;
 }
 
 .new-post-button:hover {
@@ -92,6 +93,18 @@ body {
     font-weight: bold;
 }
 
+.post-tags {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.post-date {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 /* Styles for the buttons */
 .edit-button {
     background-color: #00bf72;
@@ -132,7 +145,6 @@ body {
     color: white;
 }
 
-
 .unlike-button {
     background-color: #f44336;
     color: white;
@@ -144,4 +156,29 @@ body {
 .unlike-button:active {
     background-color: #d32f2f;
     color: white;
+}
+
+.footer {
+    background-color: #1f324c; 
+    color: white;
+    padding: 10px 0; 
+    z-index: 1;
+}
+
+.footer a {
+    color: white;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.footer h5 {
+    margin-bottom: 10px;
+}
+
+.footer img {
+    max-height: 30px; 
+    width: auto;
 }
