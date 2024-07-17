@@ -16,13 +16,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
             const postAuthor = document.querySelector('#postAuthor').value.trim();
             const postTags = document.querySelector('#postTags').value.trim().split(',').map(tag => tag.trim());
             const postContent = document.querySelector('#postContent').value.trim();
+            const postImageInput = document.querySelector('#postImage');
 
             if (postAuthor && postContent) {
-                createPost(postAuthor, postTags, postContent);
-                document.querySelector('#postAuthor').value = '';
-                document.querySelector('#postTags').value = '';
-                document.querySelector('#postContent').value = '';
-                $(newPostModal).modal('hide');
+                if (postImageInput.files && postImageInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const postImage = e.target.result;
+                        createPost(postAuthor, postTags, postContent, postImage);
+                        clearPostForm();
+                    };
+                    reader.readAsDataURL(postImageInput.files[0]);
+                } else {
+                    createPost(postAuthor, postTags, postContent);
+                    clearPostForm();
+                }
             } else {
                 alert('Author and content cannot be empty.');
             }
@@ -37,18 +45,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
+    // Function to clear the post form
+    function clearPostForm() {
+        document.querySelector('#postAuthor').value = '';
+        document.querySelector('#postTags').value = '';
+        document.querySelector('#postContent').value = '';
+        document.querySelector('#postImage').value = '';
+        $(newPostModal).modal('hide');
+    }
+
     // Function to create a new post
-    function createPost(author, tags, content) {
+    function createPost(author, tags, content, image = null) {
         const postId = Date.now();
         const postDate = new Date().toLocaleString();
 
         const post = {
             id: postId,
             author,
-            tags: tags || [], // Ensure tags is an array,
+            tags: tags || [], // Ensure tags is an array
             content,
             date: postDate,
             likes: 0,
+            image: image || null,
         };
 
         console.log('Creating post:', post); // Log post details
@@ -119,10 +137,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 </div>
             </div>
         `;
+        if (post.image) {
+            const postImage = document.createElement('img');
+            postImage.src = post.image;
+            postImage.className = 'card-img-top';
+            postCard.insertBefore(postImage, postCard.firstChild);
+        }
 
         // Append the new post card to the post container
-        const welcomeCard = postContainer.querySelector('.welcome-card');
-        // postContainer.insertBefore(postCard, welcomeCard.nextSibling);
         postContainer.appendChild(postCard);
 
         // Add event listeners for the new post buttons
@@ -138,7 +160,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         postCard.querySelector('.hide-button').addEventListener('click', () => hidePost(post.id));
     }
 
-// Function to delete a post from local storage and view
+    // Function to delete a post from local storage and view
     function deletePostFromLocalStorage(id) {
         let posts = getPosts();
         posts = posts.filter(post => post.id !== id);
@@ -195,17 +217,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const tagLikes = {};
 
         if (Array.isArray(posts)) {
-        posts.forEach(post => {
-            if (Array.isArray(post.tags)) {
-                post.tags.forEach(tag => {
-                    if (!tagLikes[tag]) {
-                        tagLikes[tag] = 0;
-                    }
-                    tagLikes[tag] += post.likes;
-                });
-            }
-        });
-    }
+            posts.forEach(post => {
+                if (Array.isArray(post.tags)) {
+                    post.tags.forEach(tag => {
+                        if (!tagLikes[tag]) {
+                            tagLikes[tag] = 0;
+                        }
+                        tagLikes[tag] += post.likes;
+                    });
+                }
+            });
+        }
 
         const sortedTags = Object.entries(tagLikes).sort((a, b) => b[1] - a[1]);
 
@@ -236,7 +258,5 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 searchButton.click();
             }
         });
-
     }
-
 });
