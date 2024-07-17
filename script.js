@@ -13,22 +13,72 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Event listener to create a new post when the submit button is clicked
     if (submitPostButton) {
-        submitPostButton.addEventListener('click', () => {
+        submitPostButton.addEventListener('click', async () => {
             const postAuthor = document.querySelector('#postAuthor').value.trim();
             const postTags = document.querySelector('#postTags').value.trim().split(',').map(tag => tag.trim());
             const postContent = document.querySelector('#postContent').value.trim();
+            const postImage = document.querySelector('#postImage').files[0];
 
             if (postAuthor && postContent) {
-                createPost(postAuthor, postTags, postContent);
+                let imageBase64 = null;
+                if (postImage) {
+                    if (!['image/png', 'image/jpeg'].includes(postImage.type)) {
+                        alert('Please select a valid image file (PNG or JPG).');
+                        return;
+                    }
+                    imageBase64 = await toBase64(postImage);
+                }
+                createPost(postAuthor, postTags, postContent, imageBase64);
                 // Clear the form inputs
                 document.querySelector('#postAuthor').value = '';
                 document.querySelector('#postTags').value = '';
                 document.querySelector('#postContent').value = '';
+                document.querySelector('#postImage').value = '';
                 // Hide the modal after submitting
                 $(newPostModal).modal('hide');
             } else {
                 alert('Author and content cannot be empty.');
             }
+        });
+    }
+
+    // Function to convert file to Base64
+    function toBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                const img = new Image();
+                img.src = reader.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const maxWidth = 800; // Max width for the image
+                    const maxHeight = 600; // Max height for the image
+
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height *= maxWidth / width;
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width *= maxHeight / height;
+                            height = maxHeight;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const resizedBase64 = canvas.toDataURL('image/jpeg', 0.7); // Adjust the quality (0.7 for 70% quality)
+                    resolve(resizedBase64);
+                };
+            };
+            reader.onerror = error => reject(error);
         });
     }
 
@@ -41,7 +91,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 
     // Function to create a new post object and render it
-    function createPost(author, tags, content) {
+    function createPost(author, tags, content, imageBase64) {
         const postId = Date.now(); // Unique ID based on current timestamp
         const postDate = new Date().toLocaleString(); // Human-readable date
 
@@ -50,6 +100,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             author,
             tags: tags || [], // Ensure tags is an array
             content,
+            image: imageBase64, // Add image to post
             date: postDate,
             likes: 0, // Initialize likes to 0
         };
@@ -99,6 +150,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     </button>
                 </div>
                 <div class="text-center post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</div>
+                ${post.image ? `<img src="${post.image}" class="img-fluid mt-2" alt="Post Image">` : ''}
                 <p class="card-text mt-2">${post.content}</p>
                 <div class="d-flex justify-content-between mt-3">
                     <div>
@@ -244,7 +296,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const sortedTags = Object.entries(tagLikes).sort((a, b) => b[1] - a[1]);
 
         // Update the trending tags section in the DOM
-        mostLikedContainer.innerHTML = '<span style = "font-weight: bold">Trending Tags</span>';
+        mostLikedContainer.innerHTML = '<span style="font-weight: bold">Trending Tags</span>';
         sortedTags.forEach(([tag, likes]) => {
             const tagElement = document.createElement('div');
             tagElement.innerHTML = `<span style="font-weight: bold">#${tag}:</span> ${likes} likes`;
