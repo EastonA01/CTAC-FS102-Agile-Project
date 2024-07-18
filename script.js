@@ -272,9 +272,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 localStorage.setItem('posts', JSON.stringify(posts));
     
                 const commentsSection = document.querySelector(`#comments-section-${id} .card-body`);
-                commentsSection.innerHTML += `
-                    <p class="card-text"><strong>${commentAuthor}</strong> (${new Date().toLocaleString()}): ${commentContent}</p>
-                `;
+                commentsSection.innerHTML = '';
+                post.comments.forEach(comment => {
+                    commentsSection.innerHTML += `
+                        <p class="card-text"><strong>${comment.author}</strong> (${comment.date}): ${comment.content}</p>
+                    `;
+                });
     
                 document.querySelector('#commentAuthor').value = '';
                 document.querySelector('#commentContent').value = '';
