@@ -137,14 +137,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Function to render a post on the page
     function renderPost(post) {
+        const postContainer = document.querySelector('#post-container');
         const postCard = document.createElement('div');
         postCard.className = 'card post-card';
         postCard.dataset.id = post.id;
         postCard.innerHTML = `
             <div class="card-body position-relative">
-                <div class="d-flex justify-content-between">
-                    <span class="post-username">${post.author}</span>
-                    <span class="post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</span>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="post-username">${post.author}</span>
+                        <span class="post-date">${post.date}</span>
+                    </div>
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-outline-dark btn-sm hide-button" aria-label="Hide">
                             <span aria-hidden="true">Hide</span>
@@ -154,6 +157,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         </button>
                     </div>
                 </div>
+                <div class="post-tags">${Array.isArray(post.tags) ? post.tags.map(tag => `#${tag}`).join(', ') : ''}</div>
                 ${post.image ? `<img src="${post.image}" class="img-fluid mt-2" alt="Post Image">` : ''}
                 <p class="card-text mt-2">${post.content}</p>
                 <div class="d-flex justify-content-between mt-3">
@@ -176,7 +180,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 </div>
             </div>
         `;
-
+    
         // Insert the new post card immediately after the welcome card
         const welcomeCard = postContainer.querySelector('.welcome-card');
         if (welcomeCard) {
@@ -184,7 +188,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         } else {
             postContainer.prepend(postCard);
         }
-
+    
         // Add event listeners for the new post buttons
         postCard.querySelector('.edit-button').addEventListener('click', () => editPost(post.id));
         postCard.querySelector('.comment-button').addEventListener('click', () => addComment(post.id));
@@ -194,7 +198,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 deletePostFromLocalStorage(post.id);
             }
         });
-
+    
         postCard.querySelector('.hide-button').addEventListener('click', () => hidePost(post.id));
     }
 

@@ -240,10 +240,23 @@ body {
         right: 20px;
         z-index: 1001;
     }
-    .nav-card {
-        width:100%;
-        align-items: center;
-    }
+/* Ensure the modal content is centered */
+.modal-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Styling for the nav links */
+.nav-link {
+    font-size: 1.2rem;
+    color: #007bff; 
+    margin: 10px 0; 
+}
+
+.nav-link i {
+    margin-right: 8px; 
+
 }
 
 /* Sticky position adjustments for navigation and most liked cards on smaller screens */
@@ -253,4 +266,5 @@ body {
         width: 100%;
         margin-bottom: 20px;
     }
+}
 }

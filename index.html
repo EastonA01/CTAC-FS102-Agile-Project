@@ -40,7 +40,7 @@
             </div>
 
             <!-- Button for showing the nav card on small screens -->
-            <button class="btn btn-primary d-md-none" id="show-nav-card">Nav</button>
+            <button class="btn btn-primary d-md-none" id="show-nav-card"><i class="fas fa-home"></i></button>
 
             <!-- Main content area for welcome message and posts -->
             <div class="col-md-6">
@@ -174,38 +174,33 @@
     </div>
 
     <!-- Nav Card Modal -->
-    <!-- Nav Card Modal -->
-<div class="modal fade" id="navCardModal" tabindex="-1" role="dialog" aria-labelledby="navCardModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="navCardModalLabel">Navigation</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="card nav-card text-center">
-                    <div class="card-body">
-                        <ul class="nav flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" id="home-button" data-dismiss="modal"><i class="fas fa-home"></i> Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" id="search-button-nav" data-dismiss="modal"><i class="fas fa-search"></i> Search</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-dismiss="modal"><i class="fas fa-bell"></i> Notifications</a></li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" id="load-posts-button" data-dismiss="modal"><i class="fas fa-sync-alt"></i> Load All Posts</a>
-                            </li>
-                        </ul>
-                    </div>
+    <div class="modal fade" id="navCardModal" tabindex="-1" role="dialog" aria-labelledby="navCardModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="navCardModalLabel">Navigation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="home-button" data-dismiss="modal"><i class="fas fa-home"></i> Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="search-button-nav" data-dismiss="modal"><i class="fas fa-search"></i> Search</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-dismiss="modal"><i class="fas fa-bell"></i> Notifications</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="load-posts-button" data-dismiss="modal"><i class="fas fa-sync-alt"></i> Load All Posts</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
     <footer class="footer text-white py-2">
         <div class="container">
