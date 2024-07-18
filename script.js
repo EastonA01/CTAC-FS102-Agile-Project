@@ -206,9 +206,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 </div>
                 <div class="collapse mt-3" id="comments-section-${post.id}">
                     <div class="card card-body">
-                        ${post.comments && post.comments.length > 0 ? post.comments.map(comment => `
-                            <p class="card-text"><strong>${comment.author}</strong> (${comment.date}): ${comment.content}</p>
-                        `).join('') : '<p class="card-text">No comments yet.</p>'}
+                        ${renderComments(post.comments)}
                     </div>
                 </div>
             </div>
@@ -324,7 +322,23 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 alert('Author and content cannot be empty.');
             }
         };
+
+    
     }
+
+    // Function to render comments
+    function renderComments(comments) {
+        if (!comments || comments.length === 0) {
+            return '<p class="card-text">No comments yet.</p>';
+        }
+
+        return comments.map((comment, index) => `
+            <p class="card-text">${comment.content}<br>
+                <small class="text-muted">by <strong>${comment.author}</strong> on (${comment.date})</small>
+            </p>
+            ${index < comments.length - 1 ? '<hr>' : ''}
+        `).join('');};
+    
 
     // Function to like a post
     function likePost(id) {
