@@ -90,6 +90,24 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
+    // Function to clear the post form
+    function clearPostForm() {
+        document.querySelector('#postAuthor').value = '';
+        document.querySelector('#postTags').value = '';
+        document.querySelector('#postContent').value = '';
+        document.querySelector('#postImage').value = '';
+        $(newPostModal).modal('hide');
+    }
+
+    // Function to clear the post form
+    function clearPostForm() {
+        document.querySelector('#postAuthor').value = '';
+        document.querySelector('#postTags').value = '';
+        document.querySelector('#postContent').value = '';
+        document.querySelector('#postImage').value = '';
+        $(newPostModal).modal('hide');
+    }
+
     // Function to create a new post object and render it
     function createPost(author, tags, content, imageBase64) {
         const postId = Date.now(); // Unique ID based on current timestamp
@@ -102,7 +120,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
             content,
             image: imageBase64, // Add image to post
             date: postDate,
-            likes: 0, // Initialize likes to 0
+            likes: 0,
+            image: image || null,
         };
 
         console.log('Creating post:', post); // Log post details
@@ -180,6 +199,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 </div>
             </div>
         `;
+        if (post.image) {
+            const postImage = document.createElement('img');
+            postImage.src = post.image;
+            postImage.className = 'card-img-top';
+            postCard.insertBefore(postImage, postCard.firstChild);
+        }
+
+        // Append the new post card to the post container
+        postContainer.appendChild(postCard);
+
     
         // Insert the new post card immediately after the welcome card
         const welcomeCard = postContainer.querySelector('.welcome-card');
@@ -202,7 +231,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         postCard.querySelector('.hide-button').addEventListener('click', () => hidePost(post.id));
     }
 
-// Function to delete a post from local storage and view
+    // Function to delete a post from local storage and view
     function deletePostFromLocalStorage(id) {
         let posts = getPosts();
         posts = posts.filter(post => post.id !== id);
@@ -329,11 +358,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
         mostLikedContainer.innerHTML = '<span style="font-weight: bold">Trending Tags</span>';
         sortedTags.forEach(([tag, likes]) => {
             const tagElement = document.createElement('div');
-            tagElement.innerHTML = `<span style="font-weight: bold">#${tag}:</span> ${likes} likes`;
+            tagElement.innerText = `${tag}: ${likes} likes`;
+            tagElement.className = 'trending-tag';
+            tagElement.addEventListener('click', () => filterPostsByTag(tag));
             mostLikedContainer.appendChild(tagElement);
         });
     }
-
+    
+    // Function to filter posts by a specific tag
+    function filterPostsByTag(tag) {
+        const posts = getPosts();
+        postContainer.innerHTML = '';
+        posts.filter(post => post.tags.includes(tag)).forEach(post => renderPost(post));
+    }
     // Event listener for the search button
     if (searchButton) {
         searchButton.addEventListener('click', () => {
