@@ -199,12 +199,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 </div>
             </div>
         `;
-        if (post.image) {
-            const postImage = document.createElement('img');
-            postImage.src = post.image;
-            postImage.className = 'card-img-top';
-            postCard.insertBefore(postImage, postCard.firstChild);
-        }
 
         // Append the new post card to the post container
         postContainer.appendChild(postCard);
