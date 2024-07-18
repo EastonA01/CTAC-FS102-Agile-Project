@@ -342,15 +342,22 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
-    // Event listener for the search button
+    // Event listener for the search button, query posts, and render matching posts
     if (searchButton) {
         searchButton.addEventListener('click', () => {
             const searchTerm = searchBar.value.toLowerCase();
-            const posts = getPosts(); // Retrieve posts from localStorage
+            const posts = getPosts() || []; // Retrieve posts from localStorage
             postContainer.innerHTML = ''; // Clear existing posts
-            posts
-                .filter(post => post.tags.some(tag => tag.toLowerCase().includes(searchTerm)) || post.content.toLowerCase().includes(searchTerm))
-                .forEach(post => renderPost(post)); // Render filtered posts
+            const filteredPosts = posts.filter(post =>
+                post.tags.some(tag => tag.toLowerCase().includes(searchTerm)) || 
+                post.content.toLowerCase().includes(searchTerm) || 
+                post.author.toLowerCase().includes(searchTerm)
+            );
+            if (filteredPosts.length === 0) {
+                postContainer.innerHTML = '<p>No posts found</p>';
+            } else {
+                filteredPosts.forEach(post => renderPost(post));  // Render filtered posts
+            }
         });
     }
 
