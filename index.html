@@ -31,9 +31,11 @@
                                 <a class="nav-link" href="#" id="search-button-nav"><i class="fas fa-search"></i> Search</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#"><i class="fas fa-bell"></i> Notifications</a></li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#" id="load-posts-button"><i class="fas fa-sync-alt"></i> Load All Posts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" id="login-button"><i class="fas fa-user"></i> Login</a>
                             </li>
                         </ul>
                     </div>
@@ -48,7 +50,7 @@
                 <div class="card welcome-card">
                     <div class="card-body">
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control search-bar" id="search-bar" placeholder="Search tags..." aria-label="Search tags" aria-describedby="search-button">
+                            <input type="text" class="form-control search-bar" id="search-bar" placeholder="Search posts..." aria-label="Search tags" aria-describedby="search-button">
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" id="search-button">Search</button>
                             </div>
@@ -88,7 +90,7 @@
                     <form>
                         <div class="form-group">
                             <label for="postAuthor">Author</label>
-                            <input type="text" class="form-control" id="postAuthor">
+                            <input type="text" class="form-control" id="postAuthor" readonly>
                         </div>
                         <div class="form-group">
                             <label for="postTags">Tags (comma separated)</label>
@@ -100,7 +102,7 @@
                         </div>
                         <div class="form-group">
                             <label for="postContent">Post Content</label>
-                            <textarea class="form-control" id="postContent" rows="3"></textarea>
+                            <textarea class="form-control" id="postContent" rows="3" maxlength="255"></textarea>
                         </div>
                     </form>
                 </div>
@@ -133,7 +135,7 @@
                         </div>
                         <div class="form-group">
                             <label for="editPostContent">Post Content</label>
-                            <textarea class="form-control" id="editPostContent" rows="3"></textarea>
+                            <textarea class="form-control" id="editPostContent" rows="3" maxlength="255"></textarea>
                         </div>
                     </form>
                 </div>
@@ -162,7 +164,7 @@
                         </div>
                         <div class="form-group">
                             <label for="commentContent">Comment</label>
-                            <textarea class="form-control" id="commentContent" rows="3"></textarea>
+                            <textarea class="form-control" id="commentContent" rows="3" maxlength="255"></textarea>
                         </div>
                     </form>
                 </div>
@@ -197,7 +199,30 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#" id="load-posts-button" data-dismiss="modal"><i class="fas fa-sync-alt"></i> Load All Posts</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="login-button"><i class="fas fa-user"></i> Login</a>
+                        </li>
                     </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Login -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="loginUsername" class="form-control" placeholder="Username">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="loginSubmitButton" class="btn btn-primary">Login</button>
                 </div>
             </div>
         </div>
@@ -235,6 +260,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    
     <script>
         $(document).ready(function(){
             $('[data-toggle="tooltip"]').tooltip();
