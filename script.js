@@ -183,10 +183,9 @@ function createPost(author, tags, content, imageBase64) {
             author,
             tags: tags || [], // Ensure tags is an array
             content,
-            image: imageBase64, // Add image to post
+            image: imageBase64 || null, // Add image to post
             date: postDate,
             likes: 0,
-            image: image || null,
         };
 
     console.log('Creating post:', post); // Log post details
