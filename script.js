@@ -252,7 +252,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Function to add a comment
     function addComment(id) {
-            
+        $('#commentModal').modal('show');
+
         const submitCommentButton = document.querySelector('#submitCommentButton');
         submitCommentButton.onclick = function() {
             const commentAuthor = document.querySelector('#commentAuthor').value.trim();
@@ -287,29 +288,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
         };
     }
-/*
-    //Display comments under posts
-    //iteration for each instance of displayComment
-    const showComments = document.querySelector('#comments-button');
-    showComments.addEventListener('click', () => loadComments(posts.id));
-    const loadComments = (id) => {
-        for (let i = 0; i < comments.length; i++) {
-            let comments = JSON.parse(`posts[${id}].comments[${i}]`) || ['No comments at this time.'];
-            comments.forEach(comment => {
-                displayComment(i, comment);
-            });
-        }
-    };
 
-    //Function to display a comment in the comment section of a post card
-    const displayComment = (i, comment) => {
-        const commentList = document.getElementById(`comments-section-${posts.id}`);
-        const commentDiv = document.createElement('div');
-        commentDiv.className = 'card card-body';
-        commentDiv.innerHTML = `<p class ="card-text">${comment.content}</p><small class="text-muted">Posted by ${comment.author} on ${comment.date}</small`;
-        commentList.appendChild(commentDiv);
-    };
-*/
     // Function to like a post
     function likePost(id) {
         let posts = getPosts(); // Retrieve posts from localStorage
