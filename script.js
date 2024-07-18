@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Event listener to create a new post when the submit button is clicked
     if (submitPostButton) {
         submitPostButton.addEventListener('click', async () => {
-            //const postAuthor = document.querySelector('#postAuthor').value.trim();
             const postAuthor = loggedInUser;
             const postTags = document.querySelector('#postTags').value.trim().split(',').map(tag => tag.trim());
             const postContent = document.querySelector('#postContent').value.trim();
@@ -136,6 +135,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             image: imageBase64, // Add image to post
             date: postDate,
             likes: 0, // Initialize likes to 0
+            comments: [] // Initialize comments to an empty array
         };
 
         console.log('Creating post:', post); // Log post details
@@ -220,188 +220,110 @@ document.addEventListener('DOMContentLoaded', (event) => {
         postCard.querySelector('.edit-button').addEventListener('click', () => editPost(post.id));
         postCard.querySelector('.comment-button').addEventListener('click', () => addComment(post.id));
         postCard.querySelector('.like-button').addEventListener('click', () => likePost(post.id));
-        postCard.querySelector('.delete-button').addEventListener('click', () => {
-            if (confirm('Are you sure you want to delete this post?')) {
-                deletePostFromLocalStorage(post.id);
-            }
-        });
-
+        postCard.querySelector('.delete-button').addEventListener('click', () => deletePost(post.id));
         postCard.querySelector('.hide-button').addEventListener('click', () => hidePost(post.id));
-    }
-
-// Function to delete a post from local storage and view
-    function deletePostFromLocalStorage(id) {
-        let posts = getPosts();
-        posts = posts.filter(post => post.id !== id);
-        localStorage.setItem('posts', JSON.stringify(posts));
-        deletePost(id);
-    }
-
-    // Function to delete a post from the view and update the tags
-    function deletePost(id) {
-        document.querySelector(`[data-id="${id}"]`).remove(); // Remove post from the DOM
-        updateMostLikedTags(); // Update trending tags section
-    }
-
-    // Function to hide a post
-    function hidePost(id) {
-        document.querySelector(`[data-id="${id}"]`).style.display = 'none';
-    }
-
-    // Function to edit a post (placeholder for actual functionality)
-    function editPost(id) {
-        const postCard = document.querySelector(`[data-id="${id}"]`);
-        const postAuthor = postCard.querySelector('.post-username').innerText;
-        const postTags = postCard.querySelector('.post-tags').innerText.split(', ').map(tag => tag.replace('#', '')).join(', ');
-        const postContent = postCard.querySelector('.card-text').innerText;
-    
-        document.querySelector('#editPostAuthor').value = postAuthor;
-        document.querySelector('#editPostTags').value = postTags;
-        document.querySelector('#editPostContent').value = postContent;
-    
-        $('#editPostModal').modal('show');
-    
-        const submitEditPostButton = document.querySelector('#submitEditPostButton');
-        submitEditPostButton.onclick = function() {
-            const updatedTags = document.querySelector('#editPostTags').value.trim().split(',').map(tag => tag.trim());
-            const updatedContent = document.querySelector('#editPostContent').value.trim();
-    
-            if (updatedContent) {
-                let posts = getPosts();
-                const post = posts.find(post => post.id === id);
-                post.tags = updatedTags;
-                post.content = updatedContent;
-                localStorage.setItem('posts', JSON.stringify(posts));
-                postCard.querySelector('.post-tags').innerText = updatedTags.map(tag => `#${tag}`).join(', ');
-                postCard.querySelector('.card-text').innerText = updatedContent;
-                $('#editPostModal').modal('hide');
-            } else {
-                alert('Content cannot be empty.');
-            }
-        };
-    }
-
-    // Function to add a comment
-    function addComment(id) {
-        $('#commentModal').modal('show');
-
-        const submitCommentButton = document.querySelector('#submitCommentButton');
-        submitCommentButton.onclick = function() {
-            const commentAuthor = document.querySelector('#commentAuthor').value.trim();
-            const commentContent = document.querySelector('#commentContent').value.trim();
-    
-            if (commentAuthor && commentContent) {
-                let posts = getPosts();
-                const post = posts.find(post => post.id === id);
-                if (!post.comments) {
-                    post.comments = [];
-                }
-                post.comments.push({
-                    author: commentAuthor,
-                    content: commentContent,
-                    date: new Date().toLocaleString()
-                });
-                localStorage.setItem('posts', JSON.stringify(posts));
-    
-                const commentsSection = document.querySelector(`#comments-section-${id} .card-body`);
-                commentsSection.innerHTML = '';
-                post.comments.forEach(comment => {
-                    commentsSection.innerHTML += `
-                        <p class="card-text"><strong>${comment.author}</strong> (${comment.date}): ${comment.content}</p>
-                    `;
-                });
-    
-                document.querySelector('#commentAuthor').value = '';
-                document.querySelector('#commentContent').value = '';
-                $('#commentModal').modal('hide');
-            } else {
-                alert('Author and content cannot be empty.');
-            }
-        };
     }
 
     // Function to render comments
     function renderComments(comments) {
-        if (!comments || comments.length === 0) {
-            return '<p class="card-text">No comments yet.</p>';
-        }
-
-        return comments.map((comment, index) => `
-            <p class="card-text">${comment.content}<br>
-                <small class="text-muted">by <strong>${comment.author}</strong> on (${comment.date})</small>
-            </p>
-            ${index < comments.length - 1 ? '<hr>' : ''}
+        return comments.map(comment => `
+            <div class="comment">
+                <p><strong>${comment.author}</strong> <span class="text-muted">${comment.date}</span></p>
+                <p>${comment.content}</p>
+            </div>
         `).join('');
     }
 
-    // Function to like a post
-    function likePost(id) {
-        let posts = getPosts(); // Retrieve posts from localStorage
-        const post = posts.find(post => post.id === id); // Find the post by ID
-        post.likes += 1; // Increment likes
-        localStorage.setItem('posts', JSON.stringify(posts)); // Save updated posts to localStorage
-        document.querySelector(`[data-id="${id}"] .like-counter`).innerText = `Likes: ${post.likes}`; // Update like counter in the DOM
-        updateMostLikedTags(); // Update trending tags section
-    }
-
-    // Function to update the "Most Liked" tags section
-    function updateMostLikedTags() {
-        const posts = getPosts(); // Retrieve posts from localStorage
-        const tagLikes = {}; // Initialize an object to store tag likes
-
-        // Calculate total likes for each tag
-        if (Array.isArray(posts)) {
-            posts.forEach(post => {
-                if (Array.isArray(post.tags)) {
-                    post.tags.forEach(tag => {
-                        if (!tagLikes[tag]) {
-                            tagLikes[tag] = 0;
-                        }
-                        tagLikes[tag] += post.likes;
-                    });
+    // Function to add a comment to a post
+    function addComment(postId) {
+        const commentContent = prompt('Enter your comment:');
+        if (commentContent) {
+            const posts = getPosts();
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                const comment = {
+                    author: loggedInUser,
+                    content: commentContent,
+                    date: new Date().toLocaleString()
+                };
+                post.comments.push(comment);
+                localStorage.setItem('posts', JSON.stringify(posts));
+                const postCard = document.querySelector(`.post-card[data-id="${postId}"]`);
+                if (postCard) {
+                    const commentsSection = postCard.querySelector(`#comments-section-${postId} .card-body`);
+                    if (commentsSection) {
+                        commentsSection.innerHTML = renderComments(post.comments);
+                    }
+                    // Update the comments button text
+                    const commentsButton = postCard.querySelector('.comments-button');
+                    commentsButton.innerText = `Comments (${post.comments.length})`;
                 }
-            });
-        }
-
-        // Sort tags by total likes
-        const sortedTags = Object.entries(tagLikes).sort((a, b) => b[1] - a[1]);
-
-        // Update the trending tags section in the DOM
-        mostLikedContainer.innerHTML = '<span style="font-weight: bold">Trending Tags</span>';
-        sortedTags.forEach(([tag, likes]) => {
-            const tagElement = document.createElement('div');
-            tagElement.innerHTML = `<span style="font-weight: bold">#${tag}:</span> ${likes} likes`;
-            tagElement.className = 'trending-tag';
-            tagElement.addEventListener('click', () => filterPostsByTag(tag));
-            mostLikedContainer.appendChild(tagElement);
-        });
-    }
-
-    // Function to filter posts by a specific tag
-    function filterPostsByTag(tag) {
-        const posts = getPosts();
-        postContainer.innerHTML = '';
-        posts.filter(post => post.tags.includes(tag)).forEach(post => renderPost(post));
-    }
-
-    // Event listener for the search button
-    if (searchButton) {
-        searchButton.addEventListener('click', () => {
-            const searchTerm = searchBar.value.toLowerCase();
-            const posts = getPosts(); // Retrieve posts from localStorage
-            postContainer.innerHTML = ''; // Clear existing posts
-            posts
-                .filter(post => post.tags.some(tag => tag.toLowerCase().includes(searchTerm)) || post.content.toLowerCase().includes(searchTerm))
-                .forEach(post => renderPost(post)); // Render filtered posts
-        });
-    }
-
-    // Event listener for pressing "Enter" key in the search bar
-    if (searchBar) {
-        searchBar.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                searchButton.click(); // Trigger search button click
             }
+        }
+    }
+
+    // Function to like a post
+    function likePost(postId) {
+        const posts = getPosts();
+        const post = posts.find(p => p.id === postId);
+        if (post) {
+            post.likes++;
+            localStorage.setItem('posts', JSON.stringify(posts));
+            const postCard = document.querySelector(`.post-card[data-id="${postId}"]`);
+            if (postCard) {
+                const likeCounter = postCard.querySelector('.like-counter');
+                likeCounter.innerText = `Likes: ${post.likes}`;
+            }
+        }
+    }
+
+    // Function to delete a post
+    function deletePost(postId) {
+        let posts = getPosts();
+        posts = posts.filter(p => p.id !== postId);
+        localStorage.setItem('posts', JSON.stringify(posts));
+        const postCard = document.querySelector(`.post-card[data-id="${postId}"]`);
+        if (postCard) {
+            postCard.remove();
+        }
+    }
+
+    // Function to hide a post
+    function hidePost(postId) {
+        const postCard = document.querySelector(`.post-card[data-id="${postId}"]`);
+        if (postCard) {
+            postCard.style.display = 'none';
+        }
+    }
+
+    // Function to edit a post
+    function editPost(postId) {
+        const posts = getPosts();
+        const post = posts.find(p => p.id === postId);
+        if (post) {
+            const newContent = prompt('Edit your post content:', post.content);
+            if (newContent) {
+                post.content = newContent;
+                localStorage.setItem('posts', JSON.stringify(posts));
+                const postCard = document.querySelector(`.post-card[data-id="${postId}"]`);
+                if (postCard) {
+                    const cardText = postCard.querySelector('.card-text');
+                    cardText.innerText = post.content;
+                }
+            }
+        }
+    }
+
+    // Function to update the most liked tags section
+    function updateMostLikedTags() {
+        const posts = getPosts();
+        const tagCount = {};
+        posts.forEach(post => {
+            post.tags.forEach(tag => {
+                tagCount[tag] = (tagCount[tag] || 0) + post.likes;
+            });
         });
+        const sortedTags = Object.keys(tagCount).sort((a, b) => tagCount[b] - tagCount[a]);
+        mostLikedContainer.innerHTML = sortedTags.map(tag => `<span class="badge badge-primary">${tag}</span>`).join(' ');
     }
 });
