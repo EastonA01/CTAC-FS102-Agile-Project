@@ -182,3 +182,13 @@ body {
     max-height: 30px; 
     width: auto;
 }
+
+.trending-tag {
+    cursor: pointer;
+    text-decoration: none;
+    color: #004d7a;
+}
+
+.trending-tag:hover {
+    text-decoration: underline;
+}
