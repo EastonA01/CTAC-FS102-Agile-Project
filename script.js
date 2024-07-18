@@ -363,8 +363,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
         sortedTags.forEach(([tag, likes]) => {
             const tagElement = document.createElement('div');
             tagElement.innerHTML = `<span style="font-weight: bold">#${tag}:</span> ${likes} likes`;
+            tagElement.className = 'trending-tag';
+            tagElement.addEventListener('click', () => filterPostsByTag(tag));
             mostLikedContainer.appendChild(tagElement);
         });
+    }
+
+    // Function to filter posts by a specific tag
+    function filterPostsByTag(tag) {
+        const posts = getPosts();
+        postContainer.innerHTML = '';
+        posts.filter(post => post.tags.includes(tag)).forEach(post => renderPost(post));
     }
 
     // Event listener for the search button
