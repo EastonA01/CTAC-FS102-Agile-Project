@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 <div class="d-flex justify-content-between mt-3">
                     <div>
                         <span class="like-counter">Likes: ${post.likes}</span>
-                        <button type="button" class="btn btn-secondary btn-sm comments-button" data-toggle="collapse" data-target="#comments-section-${post.id}" aria-expanded="false" aria-controls="comments-section-${post.id}">${post.comments.length} Comments</button>
+                        <button type="button" class="btn btn-secondary btn-sm comments-button" data-toggle="collapse" data-target="#comments-section-${post.id}" aria-expanded="false" aria-controls="comments-section-${post.id}">Comments (${post.comments.length})</button>
                     </div>
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-secondary btn-sm edit-button">Edit</button>
@@ -169,9 +169,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 </div>
                 <div class="collapse mt-3" id="comments-section-${post.id}">
                     <div class="card card-body">
-                        ${post.comments && post.comments.length > 0 ? post.comments.map(comment => `
-                            <p class="card-text">${comment.content}<br><small class="text-muted">by <strong>${comment.author}</strong> on (${comment.date}): </small><hr></p>
-                        `).join('') : '<p class="card-text">No comments yet.</p>'}
+                        ${renderComments(post.comments)}
                     </div>
                 </div>
             </div>
@@ -287,6 +285,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 alert('Author and content cannot be empty.');
             }
         };
+    }
+
+    // Function to render comments
+    function renderComments(comments) {
+        if (!comments || comments.length === 0) {
+            return '<p class="card-text">No comments yet.</p>';
+        }
+
+        return comments.map((comment, index) => `
+            <p class="card-text">${comment.content}<br>
+                <small class="text-muted">by <strong>${comment.author}</strong> on (${comment.date})</small>
+            </p>
+            ${index < comments.length - 1 ? '<hr>' : ''}
+        `).join('');
     }
 
     // Function to like a post
