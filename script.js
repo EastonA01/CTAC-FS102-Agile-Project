@@ -6,6 +6,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 // Function to initialize event listeners
 function initializeEventListeners() {
+    console.log('DOM fully loaded and parsed');
+    initializeEventListeners();
+    loadPosts();
+});
+
+// Function to initialize event listeners
+function initializeEventListeners() {
     // Select key elements from the DOM
     const newPostModal = document.querySelector('#newPostModal');
     const submitPostButton = document.querySelector('#submitPostButton');
@@ -248,7 +255,7 @@ function getPosts() {
                 <div class="d-flex justify-content-between mt-3">
                     <div>
                         <span class="like-counter">Likes: ${post.likes}</span>
-                        <button type="button" class="btn btn-secondary btn-sm comments-button" data-toggle="collapse" data-target="#comments-section-${post.id}" aria-expanded="false" aria-controls="comments-section-${post.id}">Comments (${post.comments.length})</button>
+                        <button type="button" class="btn btn-secondary btn-sm comments-button" data-toggle="collapse" data-target="#comments-section-${post.id}" aria-expanded="false" aria-controls="comments-section-${post.id}">Comments</button>
                     </div>
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-secondary btn-sm edit-button">Edit</button>
@@ -341,9 +348,9 @@ function editPost(id) {
     };
 }
 
-    // Function to add a comment
-    function addComment(id) {
-        $('#commentModal').modal('show');
+// Function to add a comment
+function addComment(id) {
+    $('#commentModal').modal('show');
 
         const submitCommentButton = document.querySelector('#submitCommentButton');
         submitCommentButton.onclick = function() {
@@ -443,7 +450,11 @@ function updateMostLikedTags() {
         postContainer.innerHTML = '';
         posts.filter(post => post.tags.includes(tag)).forEach(post => renderPost(post));
     }
+<<<<<<< HEAD
     // Event listener for the search button, query posts, and render matching posts
+=======
+    // Event listener for the search button
+>>>>>>> feature/20/searchbar
     if (searchButton) {
         searchButton.addEventListener('click', () => {
             const searchTerm = searchBar.value.toLowerCase();
