@@ -7,14 +7,25 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const searchBar = document.querySelector('#search-bar');
     const mostLikedContainer = document.querySelector('.most-liked-card .card-body');
     const loadPostsButton = document.querySelector('#load-posts-button');
+    const loginButton = document.querySelector('#login-button');
+    const loginSubmitButton = document.querySelector('#loginSubmitButton');
+    const loginModal = document.querySelector('#loginModal');
+    const postAuthorField = document.querySelector('#postAuthor');
 
+    let loggedInUser = localStorage.getItem('loggedInUser') || '';
+
+    // Update the author field in the new post modal
+    if (loggedInUser) {
+        postAuthorField.value = loggedInUser;
+    }
     // Load posts from localStorage when the page is loaded
     loadPosts();
 
     // Event listener to create a new post when the submit button is clicked
     if (submitPostButton) {
         submitPostButton.addEventListener('click', async () => {
-            const postAuthor = document.querySelector('#postAuthor').value.trim();
+            //const postAuthor = document.querySelector('#postAuthor').value.trim();
+            const postAuthor = loggedInUser;
             const postTags = document.querySelector('#postTags').value.trim().split(',').map(tag => tag.trim());
             const postContent = document.querySelector('#postContent').value.trim();
             const postImage = document.querySelector('#postImage').files[0];
@@ -38,6 +49,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 $(newPostModal).modal('hide');
             } else {
                 alert('Author and content cannot be empty.');
+            }
+        });
+    }
+
+    // Event listener for login button
+    if (loginButton) {
+        loginButton.addEventListener('click', () => {
+            $(loginModal).modal('show');
+        });
+    }
+
+    // Event listener for login submit button
+    if (loginSubmitButton) {
+        loginSubmitButton.addEventListener('click', () => {
+            const username = document.querySelector('#loginUsername').value.trim();
+            if (username) {
+                loggedInUser = username;
+                localStorage.setItem('loggedInUser', loggedInUser);
+                postAuthorField.value = loggedInUser;
+                $(loginModal).modal('hide');
+            } else {
+                alert('Username cannot be empty.');
             }
         });
     }
@@ -90,24 +123,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
-    // Function to clear the post form
-    function clearPostForm() {
-        document.querySelector('#postAuthor').value = '';
-        document.querySelector('#postTags').value = '';
-        document.querySelector('#postContent').value = '';
-        document.querySelector('#postImage').value = '';
-        $(newPostModal).modal('hide');
-    }
-
-    // Function to clear the post form
-    function clearPostForm() {
-        document.querySelector('#postAuthor').value = '';
-        document.querySelector('#postTags').value = '';
-        document.querySelector('#postContent').value = '';
-        document.querySelector('#postImage').value = '';
-        $(newPostModal).modal('hide');
-    }
-
     // Function to create a new post object and render it
     function createPost(author, tags, content, imageBase64) {
         const postId = Date.now(); // Unique ID based on current timestamp
@@ -118,9 +133,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
             author,
             tags: tags || [], // Ensure tags is an array
             content,
-            image: imageBase64 || null, // Add image to post
+            image: imageBase64, // Add image to post
             date: postDate,
-            likes: 0,
+            likes: 0, // Initialize likes to 0
         };
 
         console.log('Creating post:', post); // Log post details
@@ -198,10 +213,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 </div>
             </div>
         `;
-
-        // Append the new post card to the post container
-        postContainer.appendChild(postCard);
-
     
         // Insert the new post card immediately after the welcome card
         const welcomeCard = postContainer.querySelector('.welcome-card');
@@ -224,7 +235,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         postCard.querySelector('.hide-button').addEventListener('click', () => hidePost(post.id));
     }
 
-    // Function to delete a post from local storage and view
+// Function to delete a post from local storage and view
     function deletePostFromLocalStorage(id) {
         let posts = getPosts();
         posts = posts.filter(post => post.id !== id);
@@ -351,19 +362,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         mostLikedContainer.innerHTML = '<span style="font-weight: bold">Trending Tags</span>';
         sortedTags.forEach(([tag, likes]) => {
             const tagElement = document.createElement('div');
-            tagElement.innerText = `${tag}: ${likes} likes`;
-            tagElement.className = 'trending-tag';
-            tagElement.addEventListener('click', () => filterPostsByTag(tag));
+            tagElement.innerHTML = `<span style="font-weight: bold">#${tag}:</span> ${likes} likes`;
             mostLikedContainer.appendChild(tagElement);
         });
     }
-    
-    // Function to filter posts by a specific tag
-    function filterPostsByTag(tag) {
-        const posts = getPosts();
-        postContainer.innerHTML = '';
-        posts.filter(post => post.tags.includes(tag)).forEach(post => renderPost(post));
-    }
+
     // Event listener for the search button
     if (searchButton) {
         searchButton.addEventListener('click', () => {
