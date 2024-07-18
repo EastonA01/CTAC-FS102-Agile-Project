@@ -7,7 +7,7 @@
 
 .nav-card {
     width: 100%;
-    max-width: 300px; /* Adjust as needed */
+    max-width: 300px; 
     margin: 0 auto;
 }
 
@@ -267,4 +267,14 @@ body {
         margin-bottom: 20px;
     }
 }
+}
+
+.trending-tag {
+    cursor: pointer;
+    text-decoration: none;
+    color: #004d7a;
+}
+
+.trending-tag:hover {
+    text-decoration: underline;
 }
